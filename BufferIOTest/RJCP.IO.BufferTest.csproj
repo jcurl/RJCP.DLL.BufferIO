@@ -55,6 +55,9 @@
   <ItemGroup>
     <Compile Include="AsynchronousTestAsync.cs" />
     <Compile Include="AsyncResultTest.cs" />
+    <Compile Include="Buffer\CircularBufferExtensionsTest.cs" />
+    <Compile Include="Buffer\CircularBufferTest.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="SynchronousTestAsync.cs" />
   </ItemGroup>
 
