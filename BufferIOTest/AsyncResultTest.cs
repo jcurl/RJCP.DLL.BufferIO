@@ -106,6 +106,9 @@ namespace RJCP.IO
             Assert.That(() => {
                 test2.EndTest(ar1);
             }, Throws.TypeOf<InvalidOperationException>());
+
+            test1.EndTest(ar1);
+            test2.EndTest(ar2);
         }
 
         [Test]
