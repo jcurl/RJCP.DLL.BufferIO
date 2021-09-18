@@ -1,13 +1,12 @@
 namespace RJCP.IO
 {
     using System;
-    using System.Diagnostics;
 
     /// <summary>
     /// Class AsyncResult based on <see cref="AsyncResult"/> to also provide a result of the asynchronous operation.
     /// </summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
-    public class AsyncResult<TResult> : AsyncResult
+    public abstract class AsyncResult<TResult> : AsyncResult
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AsyncResult{TResult}"/> class.
@@ -41,8 +40,8 @@ namespace RJCP.IO
         /// instance.
         /// </para>
         /// </remarks>
-        protected AsyncResult(AsyncCallback asyncCallback, object state, object owner, string operationId) :
-            base(asyncCallback, state, owner, operationId)
+        protected AsyncResult(AsyncCallback asyncCallback, object state, object owner, string operationId)
+            : base(asyncCallback, state, owner, operationId)
         { }
 
         // Field set when operation completes
@@ -56,7 +55,7 @@ namespace RJCP.IO
         /// Your derived class should call this method, setting the result of the operation before it calls the
         /// AsyncResult.Complete method.
         /// </remarks>
-        public void SetResult(TResult result)
+        protected void SetResult(TResult result)
         {
             m_result = result;
         }
@@ -87,7 +86,6 @@ namespace RJCP.IO
         new public static TResult End(IAsyncResult result, object owner, string operationId)
         {
             AsyncResult<TResult> asyncResult = result as AsyncResult<TResult>;
-            Debug.Assert(asyncResult != null);
 
             // Wait until operation has completed
             AsyncResult.End(result, owner, operationId);

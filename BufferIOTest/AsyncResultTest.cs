@@ -183,5 +183,16 @@ namespace RJCP.IO
 
             test.EndTest(ar);
         }
+
+        [Test]
+        public void AsynchronousProcessCallback()
+        {
+            // For the purpose of this test, see the code "ProcessDelAsync". This shows how you might want to use a
+            // delegate or a lambda to combine the AsyncResult to the class instantiating it.
+
+            ProcessDelAsync op = new ProcessDelAsync();
+            IAsyncResult ar = op.BeginOp(null, null);
+            op.EndOp(ar);
+        }
     }
 }

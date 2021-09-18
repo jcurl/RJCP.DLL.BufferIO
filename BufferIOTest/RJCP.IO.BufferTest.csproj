@@ -58,6 +58,7 @@
     <Compile Include="Buffer\CircularBufferExtensionsTest.cs" />
     <Compile Include="Buffer\CircularBufferTest.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ProcessDelAsync.cs" />
     <Compile Include="SynchronousTestAsync.cs" />
     <Compile Include="Timer\TimerExpiryTest.cs" />
   </ItemGroup>

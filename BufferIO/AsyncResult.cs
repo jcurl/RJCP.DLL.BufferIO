@@ -96,15 +96,13 @@ namespace RJCP.IO
     /// ]]>
     /// </code>
     /// </remarks>
-    public class AsyncResult : IAsyncResult
+    public abstract class AsyncResult : IAsyncResult
     {
-        // Fields set at construction which never change while
-        // operation is pending
+        // Fields set at construction which never change while operation is pending
         private readonly AsyncCallback m_AsyncCallback;
         private readonly object m_AsyncState;
 
-        // Fields set at construction which do change after
-        // operation completes
+        // Fields set at construction which do change after operation completes
         private const int StatePending = 0;
         private const int StateCompletedSynchronously = 1;
         private const int StateCompletedAsynchronously = 2;
@@ -190,9 +188,9 @@ namespace RJCP.IO
         /// This method should be called when the asynchronous operation is finished. If an exception is provided, this
         /// exception will be raised when <see cref="End"/> is called.
         /// </remarks>
-        public bool Complete(Exception exception)
+        protected bool Complete(Exception exception)
         {
-            return this.Complete(exception, false /*completedSynchronously*/);
+            return Complete(exception, false /*completedSynchronously*/);
         }
 
         /// <summary>
@@ -210,7 +208,7 @@ namespace RJCP.IO
         /// <see langword="true"/> if the operation completed, <see langword="false"/> otherwise. The value of
         /// <see langword="false"/> indicates that the operation had previously completed and no operation was done.
         /// </returns>
-        public bool Complete(Exception exception, bool completedSynchronously)
+        protected bool Complete(Exception exception, bool completedSynchronously)
         {
             bool result = false;
 
@@ -223,15 +221,15 @@ namespace RJCP.IO
                 m_Exception = exception;
 
                 // Do any processing before completion.
-                this.Completing(exception, completedSynchronously);
+                Completing(exception, completedSynchronously);
 
                 // If the event exists, set it
                 if (m_AsyncWaitHandle != null) m_AsyncWaitHandle.Set();
 
-                this.MakeCallback(m_AsyncCallback, this);
+                MakeCallback(m_AsyncCallback, this);
 
                 // Do any final processing after completion
-                this.Completed(exception, completedSynchronously);
+                Completed(exception, completedSynchronously);
 
                 result = true;
             }
@@ -241,7 +239,7 @@ namespace RJCP.IO
 
         private void CheckUsage(object owner, string operationId)
         {
-            if (!object.ReferenceEquals(owner, m_Owner)) {
+            if (!ReferenceEquals(owner, m_Owner)) {
                 throw new InvalidOperationException(Resources.AsyncResult_EndWithInvalidObject);
             }
 
@@ -266,7 +264,7 @@ namespace RJCP.IO
         /// especially useful if this needs to be checked before calling <see cref="End"/> as part of your <c>EndXXX</c>
         /// method.
         /// </remarks>
-        public bool HasExceptionOccurred { get { return m_Exception != null; } }
+        protected bool HasExceptionOccurred { get { return m_Exception != null; } }
 
         /// <summary>
         /// Called by your own <c>EndXXX</c> method, to clean up resources and wait for a result if not already
@@ -301,8 +299,7 @@ namespace RJCP.IO
 
             asyncResult.CheckUsage(owner, operationId);
 
-            // This method assumes that only 1 thread calls EndInvoke
-            // for this object
+            // This method assumes that only 1 thread calls EndInvoke for this object
             if (!asyncResult.IsCompleted) {
                 // If the operation isn't done, wait for it
                 asyncResult.AsyncWaitHandle.WaitOne();
