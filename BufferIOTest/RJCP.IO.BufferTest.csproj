@@ -57,6 +57,9 @@
     <Compile Include="AsyncResultTest.cs" />
     <Compile Include="Buffer\CircularBufferExtensionsTest.cs" />
     <Compile Include="Buffer\CircularBufferTest.cs" />
+    <Compile Include="Buffer\MemoryReadBufferTest.cs" />
+    <Compile Include="Buffer\MemoryWriteBufferTest.cs" />
+    <Compile Include="Buffer\WriteOverload.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ProcessDelAsync.cs" />
     <Compile Include="SynchronousTestAsync.cs" />
