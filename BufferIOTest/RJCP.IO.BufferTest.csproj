@@ -3,7 +3,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40;net48;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net40;net45;netcoreapp3.1</TargetFrameworks>
     <OutputType>Library</OutputType>
     <IsPackable>false</IsPackable>
     <Configurations>Debug;Release</Configurations>
@@ -38,7 +38,7 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
 
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -57,13 +57,25 @@
     <Compile Include="AsyncResultTest.cs" />
     <Compile Include="Buffer\CircularBufferExtensionsTest.cs" />
     <Compile Include="Buffer\CircularBufferTest.cs" />
+    <None Include="Buffer\MemoryReadBufferAsyncTest.cs" />
     <Compile Include="Buffer\MemoryReadBufferTest.cs" />
+    <None Include="Buffer\MemoryWriteBufferAsyncTest.cs" />
     <Compile Include="Buffer\MemoryWriteBufferTest.cs" />
     <Compile Include="Buffer\WriteOverload.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ProcessDelAsync.cs" />
     <Compile Include="SynchronousTestAsync.cs" />
     <Compile Include="Timer\TimerExpiryTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+    <Compile Include="Buffer\MemoryReadBufferAsyncTest.cs" />
+    <Compile Include="Buffer\MemoryWriteBufferAsyncTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
+    <Compile Include="Buffer\MemoryReadBufferAsyncTest.cs" />
+    <Compile Include="Buffer\MemoryWriteBufferAsyncTest.cs" />
   </ItemGroup>
 
 </Project>

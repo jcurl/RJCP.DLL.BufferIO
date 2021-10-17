@@ -6,6 +6,10 @@
     using Memory;
     using Timer;
 
+#if NET45_OR_GREATER || NETSTANDARD
+    using System.Threading.Tasks;
+#endif
+
     /// <summary>
     /// The <see cref="MemoryReadBuffer"/> is a fixed memory buffer that can assist with buffered I/O.
     /// </summary>
@@ -169,6 +173,89 @@
                 m_ReadEvent.Reset();
             }
 
+            return WaitForReadInternal(count, timeout, token);
+        }
+
+#if NET45_OR_GREATER || NETSTANDARD
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds for data to be available to read.
+        /// </summary>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <returns>
+        /// <see langword="true"/> if at least one byte is now available for read, <see langword="false"/> if there was
+        /// a timeout and no data is available to read.
+        /// </returns>
+        public Task<bool> WaitForReadAsync(int timeout)
+        {
+            return WaitForReadAsync(1, timeout, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds for data to be available to read.
+        /// </summary>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <param name="token">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if at least one byte is now available for read, <see langword="false"/> if there was
+        /// a timeout and no data is available to read.
+        /// </returns>
+        public Task<bool> WaitForReadAsync(int timeout, CancellationToken token)
+        {
+            return WaitForReadAsync(1, timeout, token);
+        }
+
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds to read at least <paramref name="count"/> bytes.
+        /// </summary>
+        /// <param name="count">The number of bytes to wait for to read.</param>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <returns>
+        /// <see langword="true"/> if at least <paramref name="count"/> bytes are now available for read,
+        /// <see langword="false"/> if there was a timeout and no data, or insufficient data, is available to read.
+        /// </returns>
+        public Task<bool> WaitForReadAsync(int count, int timeout)
+        {
+            return WaitForReadAsync(count, timeout, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds to read at least <paramref name="count"/> bytes.
+        /// </summary>
+        /// <param name="count">The number of bytes to wait for to read.</param>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <param name="token">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if at least <paramref name="count"/> bytes are now available for read,
+        /// <see langword="false"/> if there was a timeout and no data, or insufficient data, is available to read.
+        /// </returns>
+        public Task<bool> WaitForReadAsync(int count, int timeout, CancellationToken token)
+        {
+            if (timeout < Timeout.Infinite)
+                throw new ArgumentOutOfRangeException(nameof(timeout));
+
+            if (token.IsCancellationRequested) return Task.FromResult(false);
+
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "Count may not be negative");
+            if (count == 0) return Task.FromResult(true);
+            if (count > m_ReadBuffer.Capacity) return Task.FromResult(false);
+
+            lock (m_Lock) {
+                if (m_ReadBuffer.Length >= count) return Task.FromResult(true);
+                if (timeout == 0) return Task.FromResult(false);
+                if (m_DeviceDead) return Task.FromResult(false);
+                m_ReadEvent.Reset();
+            }
+
+            return Task.Run(() => WaitForReadInternal(count, timeout, token), token);
+        }
+#endif
+
+        private bool WaitForReadInternal(int count, int timeout, CancellationToken token)
+        {
             TimerExpiry timer = new TimerExpiry(timeout);
             int realTimeout = timeout;
             do {

@@ -2,6 +2,10 @@
 {
     using System.Threading;
 
+#if NET45_OR_GREATER || NETSTANDARD
+    using System.Threading.Tasks;
+#endif
+
     /// <summary>
     /// The interface for <see cref="MemoryReadBuffer"/> for stream implementations.
     /// </summary>
@@ -32,6 +36,33 @@
         /// </returns>
         bool WaitForWrite(int count, int timeout, CancellationToken token);
 
+#if NET45_OR_GREATER || NETSTANDARD
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds to write at least <paramref name="count"/> bytes.
+        /// </summary>
+        /// <param name="count">The number of bytes to wait for to write.</param>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <returns>
+        /// <see langword="true"/> if at least <paramref name="count"/> bytes are now available for writing,
+        /// <see langword="false"/> if there was a timeout and insufficient space is available to write.
+        /// </returns>
+        Task<bool> WaitForWriteAsync(int count, int timeout);
+
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds to read at least <paramref name="count"/> bytes.
+        /// </summary>
+        /// <param name="count">The number of bytes to wait for to read.</param>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <param name="token">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if at least <paramref name="count"/> bytes are now available for writing,
+        /// <see langword="false"/> if there was a timeout and insufficient space is available to write.
+        /// </returns>
+        Task<bool> WaitForWriteAsync(int count, int timeout, CancellationToken token);
+#endif
+
         /// <summary>
         /// Waits for the write buffer to become empty.
         /// </summary>
@@ -54,6 +85,31 @@
         /// was a timeout and data still remains to write.
         /// </returns>
         bool WaitForEmpty(int timeout, CancellationToken token);
+
+#if NET45_OR_GREATER || NETSTANDARD
+        /// <summary>
+        /// Waits for the write buffer to become empty.
+        /// </summary>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <returns>
+        /// <see langword="true"/> if the buffer became completely empty while waiting, <see langword="false"/> if there
+        /// was a timeout and data still remains to write.
+        /// </returns>
+        Task<bool> WaitForEmptyAsync(int timeout);
+
+        /// <summary>
+        /// Waits for the write buffer to become empty.
+        /// </summary>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <param name="token">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the buffer became completely empty while waiting, <see langword="false"/> if there
+        /// was a timeout and data still remains to write.
+        /// </returns>
+        Task<bool> WaitForEmptyAsync(int timeout, CancellationToken token);
+#endif
 
         /// <summary>
         /// Performs a non-blocking read, copying data from the memory buffer to the array specified.

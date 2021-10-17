@@ -2,6 +2,10 @@
 {
     using System.Threading;
 
+#if NET45_OR_GREATER || NETSTANDARD
+    using System.Threading.Tasks;
+#endif
+
     /// <summary>
     /// The interface for <see cref="MemoryReadBuffer"/> for stream implementations.
     /// </summary>
@@ -54,6 +58,56 @@
         /// <see langword="false"/> if there was a timeout and no data, or insufficient data, is available to read.
         /// </returns>
         bool WaitForRead(int count, int timeout, CancellationToken token);
+
+#if NET45_OR_GREATER || NETSTANDARD
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds for data to be available to read.
+        /// </summary>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <returns>
+        /// <see langword="true"/> if at least one byte is now available for read, <see langword="false"/> if there was
+        /// a timeout and no data is available to read.
+        /// </returns>
+        Task<bool> WaitForReadAsync(int timeout);
+
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds for data to be available to read.
+        /// </summary>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <param name="token">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if at least one byte is now available for read, <see langword="false"/> if there was
+        /// a timeout and no data is available to read.
+        /// </returns>
+        Task<bool> WaitForReadAsync(int timeout, CancellationToken token);
+
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds to read at least <paramref name="count"/> bytes.
+        /// </summary>
+        /// <param name="count">The number of bytes to wait for to read.</param>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <returns>
+        /// <see langword="true"/> if at least <paramref name="count"/> bytes are now available for read,
+        /// <see langword="false"/> if there was a timeout and no data, or insufficient data, is available to read.
+        /// </returns>
+        Task<bool> WaitForReadAsync(int count, int timeout);
+
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds to read at least <paramref name="count"/> bytes.
+        /// </summary>
+        /// <param name="count">The number of bytes to wait for to read.</param>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <param name="token">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if at least <paramref name="count"/> bytes are now available for read,
+        /// <see langword="false"/> if there was a timeout and no data, or insufficient data, is available to read.
+        /// </returns>
+        Task<bool> WaitForReadAsync(int count, int timeout, CancellationToken token);
+#endif
 
         /// <summary>
         /// Performs a non-blocking read, copying data from the memory buffer to the array specified.

@@ -6,6 +6,10 @@
     using Memory;
     using Timer;
 
+#if NET45_OR_GREATER || NETSTANDARD
+    using System.Threading.Tasks;
+#endif
+
     /// <summary>
     /// The <see cref="MemoryWriteBuffer"/> is a fixed memory buffer that can assist with buffered I/O.
     /// </summary>
@@ -156,7 +160,98 @@
                 if (timeout == 0) return false;
                 m_WriteEvent.Reset();
             }
+            return WaitForWriteEventInternal(count, timeout, token);
+        }
 
+#if NET45_OR_GREATER || NETSTANDARD
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds to write at least <paramref name="count"/> bytes.
+        /// </summary>
+        /// <param name="count">The number of bytes to wait for to write.</param>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <returns>
+        /// <see langword="true"/> if at least <paramref name="count"/> bytes are now available for writing,
+        /// <see langword="false"/> if there was a timeout and insufficient space is available to write.
+        /// </returns>
+        public Task<bool> WaitForWriteAsync(int count, int timeout)
+        {
+            return WaitForWriteAsync(count, timeout, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Waits up to <paramref name="timeout"/> milliseconds to read at least <paramref name="count"/> bytes.
+        /// </summary>
+        /// <param name="count">The number of bytes to wait for to read.</param>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <param name="token">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if at least <paramref name="count"/> bytes are now available for writing,
+        /// <see langword="false"/> if there was a timeout and insufficient space is available to write.
+        /// </returns>
+        public Task<bool> WaitForWriteAsync(int count, int timeout, CancellationToken token)
+        {
+            if (timeout < Timeout.Infinite)
+                throw new ArgumentOutOfRangeException(nameof(timeout));
+
+            if (token.IsCancellationRequested) return Task.FromResult(false);
+
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "Count may not be negative");
+            if (count == 0) return Task.FromResult(true);
+            if (count > m_WriteBuffer.Capacity) return Task.FromResult(false);
+
+            return WaitForWriteEventAsync(count, timeout, token);
+        }
+
+        /// <summary>
+        /// Waits for the write buffer to become empty.
+        /// </summary>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <returns>
+        /// <see langword="true"/> if the buffer became completely empty while waiting, <see langword="false"/> if there
+        /// was a timeout and data still remains to write.
+        /// </returns>
+        public Task<bool> WaitForEmptyAsync(int timeout)
+        {
+            return WaitForEmptyAsync(timeout, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Waits for the write buffer to become empty.
+        /// </summary>
+        /// <param name="timeout">The timeout to wait for, in milliseconds.</param>
+        /// <param name="token">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the buffer became completely empty while waiting, <see langword="false"/> if there
+        /// was a timeout and data still remains to write.
+        /// </returns>
+        public Task<bool> WaitForEmptyAsync(int timeout, CancellationToken token)
+        {
+            if (timeout < Timeout.Infinite)
+                throw new ArgumentOutOfRangeException(nameof(timeout));
+
+            if (token.IsCancellationRequested) return Task.FromResult(false);
+
+            return WaitForWriteEventAsync(-1, timeout, token);
+        }
+
+        private Task<bool> WaitForWriteEventAsync(int count, int timeout, CancellationToken token)
+        {
+            lock (m_Lock) {
+                if (m_DeviceDead) return Task.FromResult(false);
+                if (WaitForWriteEventCondition(count)) return Task.FromResult(true);
+                if (timeout == 0) return Task.FromResult(false);
+                m_WriteEvent.Reset();
+            }
+            return Task.Run(() => WaitForWriteEventInternal(count, timeout, token), token);
+        }
+#endif
+
+        private bool WaitForWriteEventInternal(int count, int timeout, CancellationToken token)
+        {
             TimerExpiry timer = new TimerExpiry(timeout);
             int realTimeout = timeout;
             do {
