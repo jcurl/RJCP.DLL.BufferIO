@@ -246,7 +246,16 @@
                 if (timeout == 0) return Task.FromResult(false);
                 m_WriteEvent.Reset();
             }
-            return Task.Run(() => WaitForWriteEventInternal(count, timeout, token), token);
+            return WaitForWriteEventInternalAsync(count, timeout, token);
+        }
+
+        private async Task<bool> WaitForWriteEventInternalAsync(int count, int timeout, CancellationToken token)
+        {
+            try {
+                return await Task.Run(() => WaitForWriteEventInternal(count, timeout, token), token);
+            } catch (TaskCanceledException) {
+                return false;
+            }
         }
 #endif
 

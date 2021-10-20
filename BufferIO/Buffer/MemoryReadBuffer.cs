@@ -250,7 +250,16 @@
                 m_ReadEvent.Reset();
             }
 
-            return Task.Run(() => WaitForReadInternal(count, timeout, token), token);
+            return WaitForReadInternalAsync(count, timeout, token);
+        }
+
+        private async Task<bool> WaitForReadInternalAsync(int count, int timeout, CancellationToken token)
+        {
+            try {
+                return await Task.Run(() => WaitForReadInternal(count, timeout, token), token);
+            } catch (TaskCanceledException) {
+                return false;
+            }
         }
 #endif
 
