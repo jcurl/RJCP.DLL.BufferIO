@@ -314,6 +314,7 @@
         /// <summary>
         /// Called when the user wants to write.
         /// </summary>
+        /// <param name="count">The number of bytes that were written.</param>
         /// <remarks>
         /// The write occurs from the user layer, but the driver layer may need to be notified. Override this class and
         /// provide your own implementation for notification.
