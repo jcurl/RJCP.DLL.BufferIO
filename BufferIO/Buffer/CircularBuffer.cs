@@ -426,7 +426,7 @@
         /// </exception>
         /// <remarks>
         /// Data is copied to the end of the Circular Buffer. The amount of data that could be copied is dependent on
-        /// the amount of free space. The result is the number of elements from the <c>buffer</c> array that is copied
+        /// the amount of free space. The result is the number of elements from <paramref name="array"/> that is copied
         /// into the Circular Buffer. Pointers in the circular buffer are updated appropriately.
         /// </remarks>
         public int Append(T[] array, int offset, int count)
@@ -440,16 +440,46 @@
 
             if (count <= WriteLength) {
                 System.Array.Copy(array, offset, m_Array, End, count);
-                Produce(count);
-                return count;
             } else {
                 count = Math.Min(Free, count);
                 System.Array.Copy(array, offset, m_Array, End, WriteLength);
                 System.Array.Copy(array, offset + WriteLength, m_Array, 0, count - WriteLength);
-                Produce(count);
-                return count;
             }
+            Produce(count);
+            return count;
         }
+
+#if NETSTANDARD
+        /// <summary>
+        /// Copy data from array to the end of this circular buffer and update the length.
+        /// </summary>
+        /// <param name="array">Array to copy from.</param>
+        /// <returns>Number of bytes copied.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> may not be <see langword="null"/>.
+        /// </exception>
+        /// <remarks>
+        /// Data is copied to the end of the Circular Buffer. The amount of data that could be copied is dependent on
+        /// the amount of free space. The result is the number of elements from <paramref name="array"/> that is copied
+        /// into the Circular Buffer. Pointers in the circular buffer are updated appropriately.
+        /// </remarks>
+        public int Append(ReadOnlySpan<T> array)
+        {
+            if (array == null) throw new ArgumentNullException(nameof(array));
+
+            int length = array.Length;
+            if (length <= WriteLength) {
+                array.CopyTo(m_Array.AsSpan(End, length));
+            } else {
+                length = Math.Min(Free, length);
+                int block2 = length - WriteLength;
+                array[0..WriteLength].CopyTo(m_Array.AsSpan(End, WriteLength));
+                array[WriteLength..length].CopyTo(m_Array.AsSpan(0, block2));
+            }
+            Produce(length);
+            return length;
+        }
+#endif
 
         /// <summary>
         /// Copy data from the circular buffer to the end of this circular buffer.
@@ -603,7 +633,7 @@
         /// </exception>
         /// <remarks>
         /// This method is very similar to the <see cref="CopyTo(T[], int, int)"/> method, but it will also consume the
-        /// data that was copied also.
+        /// data that was copied.
         /// </remarks>
         public int MoveTo(T[] array, int offset, int count)
         {
@@ -611,6 +641,25 @@
             Consume(l);
             return l;
         }
+
+#if NETSTANDARD
+        /// <summary>
+        /// Copy data from the circular buffer to the span array and then consume the data from the circular buffer.
+        /// </summary>
+        /// <param name="array">The span array to copy the data to.</param>
+        /// <returns>The number of bytes that were moved.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+        /// <remarks>
+        /// This method is very similar to the <see cref="CopyTo(T[], int, int)"/> method, but it will also consume the
+        /// data that was copied.
+        /// </remarks>
+        public int MoveTo(Span<T> array)
+        {
+            int l = CopyTo(array);
+            Consume(l);
+            return l;
+        }
+#endif
 
         /// <summary>
         /// Copy data from the circular buffer to the array.
@@ -637,13 +686,11 @@
         /// <param name="offset">Offset into the array to copy to.</param>
         /// <param name="count">Amount of data to copy to.</param>
         /// <returns>The number of bytes that were copied.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> may not be <see langword="null"/>.
-        /// </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="count"/> may not be negative;
+        /// <paramref name="count"/> is negative;
         /// <para>- or -</para>
-        /// <paramref name="offset"/> may not be negative.
+        /// <paramref name="offset"/> is negative.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="offset"/> and <paramref name="count"/> would exceed <paramref name="array"/> length.
@@ -660,18 +707,44 @@
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "may not be negative");
             if (offset > array.Length - count) throw new ArgumentException("Offset and count exceed boundary length");
 
-            int length = Math.Min(count, Length);
-            if (ReadLength >= count) {
+            if (count <= ReadLength) {
                 // The block of data is one continuous block to copy
-                System.Array.Copy(m_Array, Start, array, offset, length);
-                return length;
+                System.Array.Copy(m_Array, Start, array, offset, count);
             } else {
-                // The block of data wraps over
+                count = Math.Min(Length, count);
                 System.Array.Copy(m_Array, Start, array, offset, ReadLength);
-                System.Array.Copy(m_Array, 0, array, offset + ReadLength, length - ReadLength);
-                return length;
+                System.Array.Copy(m_Array, 0, array, offset + ReadLength, count - ReadLength);
             }
+            return count;
         }
+
+#if NETSTANDARD
+        /// <summary>
+        /// Copy data from the circular buffer to the span array.
+        /// </summary>
+        /// <param name="array">The span array to copy the data to.</param>
+        /// <returns>The number of bytes that were copied.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+        /// <remarks>
+        /// Data is copied from the circular buffer into the array specified, at the offset given. The data from the
+        /// Circular Buffer is <i>not</i> consumed. You must do this yourself. Else use the MoveTo() method.
+        /// </remarks>
+        public int CopyTo(Span<T> array)
+        {
+            if (array == null) throw new ArgumentNullException(nameof(array));
+
+            int length = array.Length;
+            if (length <= ReadLength) {
+                // The block of data is one continuous block to copy
+                m_Array.AsSpan(Start, length).CopyTo(array);
+            } else {
+                length = Math.Min(Length, length);
+                m_Array.AsSpan(Start, ReadLength).CopyTo(array);
+                m_Array.AsSpan(0, length - ReadLength).CopyTo(array[ReadLength..]);
+            }
+            return length;
+        }
+#endif
 
         /// <summary>
         /// Searches for a specific element in the array.

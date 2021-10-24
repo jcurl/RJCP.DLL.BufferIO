@@ -686,5 +686,145 @@
                 Assert.That(buffer.IsBufferNotFull, Is.True);
             }
         }
+
+        [Test]
+        public void Read()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+                // Fill the MemoryReadBuffer with data. It uses a CircularBuffer and so the index it starts at is zero.
+                Array.Copy(data, 0, buffer.Buffer, buffer.BufferEnd, data.Length);
+                buffer.Produce(data.Length);
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+                Assert.That(buffer.Read(result, 0, result.Length), Is.EqualTo(result.Length));
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+
+        [Test]
+        public void ReadWrap()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+                // Fill the MemoryReadBuffer with data. It uses a CircularBuffer and so the index it starts at is zero.
+                buffer.Produce(3968);                             // Shift the offset to position 3968 of 4096
+                Array.Copy(data, 0, buffer.Buffer, buffer.BufferEnd, 128);
+                buffer.Produce(128);                              // Fill the last 128 bytes
+                buffer.Read(new byte[3968], 0, 3968);             // Free up the 3968 bytes to write the next block
+                Array.Copy(data, 128, buffer.Buffer, 0, 128);     // Write the second half of the data
+                buffer.Produce(128);
+
+                Assert.That(buffer.BufferEnd, Is.EqualTo(128));
+                Assert.That(buffer.BufferWriteLength, Is.EqualTo(3840));
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+                Assert.That(buffer.Read(result, 0, result.Length), Is.EqualTo(result.Length));
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+
+#if NETCOREAPP
+        [Test]
+        public void ReadSpan()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+                // Fill the MemoryReadBuffer with data. It uses a CircularBuffer and so the index it starts at is zero.
+                Array.Copy(data, 0, buffer.Buffer, buffer.BufferEnd, data.Length);
+                buffer.Produce(data.Length);
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+                Span<byte> span = result;
+                Assert.That(buffer.Read(span), Is.EqualTo(result.Length));
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+
+        [Test]
+        public void ReadWrapSpan()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+                // Fill the MemoryReadBuffer with data. It uses a CircularBuffer and so the index it starts at is zero.
+                buffer.Produce(3968);                             // Shift the offset to position 3968 of 4096
+                Array.Copy(data, 0, buffer.Buffer, buffer.BufferEnd, 128);
+                buffer.Produce(128);                              // Fill the last 128 bytes
+                buffer.Read(new byte[3968], 0, 3968);             // Free up the 3968 bytes to write the next block
+                Array.Copy(data, 128, buffer.Buffer, 0, 128);     // Write the second half of the data
+                buffer.Produce(128);
+
+                Assert.That(buffer.BufferEnd, Is.EqualTo(128));
+                Assert.That(buffer.BufferWriteLength, Is.EqualTo(3840));
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+                Span<byte> span = result;
+                Assert.That(buffer.Read(span), Is.EqualTo(result.Length));
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+
+        [Test]
+        public void ReadSpanInsertViaSpan()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+                // We could just use r.NextBytes(buffer.BufferSpan[0..256]) but then we need to compare later.
+                data.AsSpan().CopyTo(buffer.BufferSpan);
+                buffer.Produce(data.Length);
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+                Span<byte> span = result;
+                Assert.That(buffer.Read(span), Is.EqualTo(result.Length));
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+
+        [Test]
+        public void ReadWrapSpanInsertViaSpan()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+                buffer.Produce(3968);                             // Shift the offset to position 3968 of 4096
+                data.AsSpan(0, 128).CopyTo(buffer.BufferSpan);
+                buffer.Produce(128);                              // Fill the last 128 bytes
+                buffer.Read(new byte[3968], 0, 3968);             // Free up the 3968 bytes to write the next block
+                data.AsSpan(128, 128).CopyTo(buffer.BufferSpan);  // Write the second half of the data
+                buffer.Produce(128);
+
+                Assert.That(buffer.BufferEnd, Is.EqualTo(128));
+                Assert.That(buffer.BufferWriteLength, Is.EqualTo(3840));
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+                Span<byte> span = result;
+                Assert.That(buffer.Read(span), Is.EqualTo(result.Length));
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+#endif
     }
 }

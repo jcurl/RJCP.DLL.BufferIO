@@ -315,6 +315,31 @@
             }
         }
 
+#if NETSTANDARD
+        /// <summary>
+        /// Reads a sequence of bytes from the current stream and advances the position within the stream by the number
+        /// of bytes read.
+        /// </summary>
+        /// <param name="buffer">
+        /// A region of memory. When this method returns, the contents of this region are replaced by the bytes read
+        /// from the current source.
+        /// </param>
+        /// <returns>
+        /// The total number of bytes read into the buffer. This can be less than the number of bytes allocated in the
+        /// buffer if that many bytes are not currently available, or zero (0) if the end of the stream has been
+        /// reached.
+        /// </returns>
+        public int Read(Span<byte> buffer)
+        {
+            lock (m_Lock) {
+                int bytes = m_ReadBuffer.MoveTo(buffer);
+                if (bytes > 0) m_BufferNotFull.Set();
+                OnRead(bytes);
+                return bytes;
+            }
+        }
+#endif
+
         /// <summary>
         /// Reads a single byte from the buffer without blocking.
         /// </summary>
@@ -415,6 +440,24 @@
         {
             get { return m_ReadBuffer.Array; }
         }
+
+#if NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// Gets a Span for the memory region that can be written to.
+        /// </summary>
+        /// <value>The Span for the memory region that can be written to.</value>
+        /// <remarks>
+        /// On .NET Core 2.1 and later, use this property instead of <see cref="Buffer"/>, <see cref="BufferEnd"/>, <see cref="BufferWriteLength"/>
+        /// <see cref="BufferPtr"/>. It's much simpler and safer.
+        /// </remarks>
+        public Span<byte> BufferSpan
+        {
+            get
+            {
+                return new Span<byte>(m_ReadBuffer.Array, m_ReadBuffer.End, m_ReadBuffer.WriteLength);
+            }
+        }
+#endif
 
         /// <summary>
         /// Gets a value indicating whether the write buffer is empty.

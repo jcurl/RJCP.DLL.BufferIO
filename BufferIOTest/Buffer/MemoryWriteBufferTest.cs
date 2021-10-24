@@ -485,5 +485,152 @@
                 Assert.That(buffer.IsDeviceDead, Is.False);
             }
         }
+
+        [Test]
+        public void Write()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+                buffer.Write(data, 0, data.Length);
+                Assert.That(buffer.BytesFree, Is.EqualTo(3840));
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+                Array.Copy(buffer.Buffer, buffer.BufferStart, result, 0, buffer.BufferReadLength);
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+
+        [Test]
+        public void WriteWrap()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+                buffer.Write(new byte[3968], 0, 3968);            // Shift the offset to position 3968 of 4096
+                buffer.Consume(128);                              // Make 256 bytes free
+                buffer.Write(data, 0, data.Length);
+                buffer.Consume(3840);
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+
+                Assert.That(buffer.BytesFree, Is.EqualTo(3840));
+                Assert.That(buffer.BufferStart, Is.EqualTo(3968));
+                Assert.That(buffer.BufferReadLength, Is.EqualTo(128));
+
+                Array.Copy(buffer.Buffer, buffer.BufferStart, result, 0, buffer.BufferReadLength);
+                buffer.Consume(buffer.BufferReadLength);
+                Array.Copy(buffer.Buffer, buffer.BufferStart, result, 128, buffer.BufferReadLength);
+                buffer.Consume(buffer.BufferReadLength);
+
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+
+#if NETCOREAPP
+        [Test]
+        public void WriteSpan()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+                Span<byte> span = data;
+                buffer.Write(span);
+                Assert.That(buffer.BytesFree, Is.EqualTo(3840));
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+                Array.Copy(buffer.Buffer, buffer.BufferStart, result, 0, buffer.BufferReadLength);
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+
+        [Test]
+        public void WriteWrapSpan()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+                buffer.Write(new byte[3968], 0, 3968);            // Shift the offset to position 3968 of 4096
+                buffer.Consume(128);                              // Make 256 bytes free
+                Span<byte> span = data;
+                buffer.Write(span);
+                buffer.Consume(3840);
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+
+                Assert.That(buffer.BytesFree, Is.EqualTo(3840));
+                Assert.That(buffer.BufferStart, Is.EqualTo(3968));
+                Assert.That(buffer.BufferReadLength, Is.EqualTo(128));
+
+                Array.Copy(buffer.Buffer, buffer.BufferStart, result, 0, buffer.BufferReadLength);
+                buffer.Consume(buffer.BufferReadLength);
+                Array.Copy(buffer.Buffer, buffer.BufferStart, result, 128, buffer.BufferReadLength);
+                buffer.Consume(buffer.BufferReadLength);
+
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+
+        [Test]
+        public void WriteSpanRetrieveViaSpan()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+                Span<byte> span = data;
+                buffer.Write(span);
+                Assert.That(buffer.BytesFree, Is.EqualTo(3840));
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+                buffer.BufferSpan.CopyTo(result.AsSpan());
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+
+        [Test]
+        public void WriteWrapSpanRetrieveViaSpan()
+        {
+            Random r = new Random();
+            byte[] data = new byte[256];
+            r.NextBytes(data);
+
+            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+                buffer.Write(new byte[3968], 0, 3968);            // Shift the offset to position 3968 of 4096
+                buffer.Consume(128);                              // Make 256 bytes free
+                Span<byte> span = data;
+                buffer.Write(span);
+                buffer.Consume(3840);
+
+                // Read the data and check the contents
+                byte[] result = new byte[256];
+
+                Assert.That(buffer.BytesFree, Is.EqualTo(3840));
+                Assert.That(buffer.BufferStart, Is.EqualTo(3968));
+                Assert.That(buffer.BufferReadLength, Is.EqualTo(128));
+
+                buffer.BufferSpan.CopyTo(result.AsSpan());
+                buffer.Consume(buffer.BufferReadLength);
+                buffer.BufferSpan.CopyTo(result.AsSpan(128));
+                buffer.Consume(buffer.BufferReadLength);
+
+                Assert.That(result, Is.EqualTo(data));
+            }
+        }
+#endif
     }
 }

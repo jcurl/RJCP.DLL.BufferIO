@@ -289,7 +289,7 @@
         }
 
         /// <summary>
-        /// Performs a non-blocking read, copying data from the memory buffer to the array specified.
+        /// Performs a non-blocking write, copying data from the memory buffer to the array specified.
         /// </summary>
         /// <param name="buffer">The buffer to copy data into.</param>
         /// <param name="offset">The offset into the buffer to copy into.</param>
@@ -310,6 +310,22 @@
                 OnWrite(count);
             }
         }
+
+#if NETSTANDARD
+        /// <summary>
+        /// Performs a non-blocking write, copying data from the memory buffer to the array specified.
+        /// </summary>
+        /// <param name="buffer">A region of memory.</param>
+        public void Write(ReadOnlySpan<byte> buffer)
+        {
+            lock (m_Lock) {
+                if (m_DeviceDead) return;
+                m_WriteBuffer.Append(buffer);
+                m_BufferNotEmpty.Set();
+                OnWrite(buffer.Length);
+            }
+        }
+#endif
 
         /// <summary>
         /// Called when the user wants to write.
@@ -387,6 +403,24 @@
         {
             get { return m_WriteBuffer.Array; }
         }
+
+#if NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// Gets a Span for the memory region that can be read from.
+        /// </summary>
+        /// <value>The Span for the memory region that can be read from.</value>
+        /// <remarks>
+        /// On .NET Core 2.1 and later, use this property instead of <see cref="Buffer"/>, <see cref="BufferStart"/>, <see cref="BufferReadLength"/>
+        /// <see cref="BufferPtr"/>. It's much simpler and safer.
+        /// </remarks>
+        public ReadOnlySpan<byte> BufferSpan
+        {
+            get
+            {
+                return new Span<byte>(m_WriteBuffer.Array, m_WriteBuffer.Start, m_WriteBuffer.ReadLength);
+            }
+        }
+#endif
 
         /// <summary>
         /// Gets a value indicating whether the read buffer is not empty.

@@ -1,5 +1,6 @@
 ﻿namespace RJCP.IO.Buffer.Memory
 {
+    using System;
     using System.Threading;
 
 #if NET45_OR_GREATER || NETSTANDARD
@@ -7,7 +8,7 @@
 #endif
 
     /// <summary>
-    /// The interface for <see cref="MemoryReadBuffer"/> for stream implementations.
+    /// The interface for <see cref="MemoryReadBuffer" /> for stream implementations.
     /// </summary>
     public interface IReadBufferStream
     {
@@ -119,6 +120,23 @@
         /// Returns the number of bytes copied, which may be less or equal to <paramref name="count"/>.
         /// </returns>
         int Read(byte[] buffer, int offset, int count);
+
+#if NETSTANDARD
+        /// <summary>
+        /// Reads a sequence of bytes from the current stream and advances the position within the stream by the number
+        /// of bytes read.
+        /// </summary>
+        /// <param name="buffer">
+        /// A region of memory. When this method returns, the contents of this region are replaced by the bytes read
+        /// from the current source.
+        /// </param>
+        /// <returns>
+        /// The total number of bytes read into the buffer. This can be less than the number of bytes allocated in the
+        /// buffer if that many bytes are not currently available, or zero (0) if the end of the stream has been
+        /// reached.
+        /// </returns>
+        int Read(Span<byte> buffer);
+#endif
 
         /// <summary>
         /// Reads a single byte from the buffer without blocking.

@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="AsynchronousTestAsync.cs" />
     <Compile Include="AsyncResultTest.cs" />
+    <Compile Include="Buffer\CircularBufferCopyTest.cs" />
     <Compile Include="Buffer\CircularBufferExtensionsTest.cs" />
     <Compile Include="Buffer\CircularBufferTest.cs" />
     <None Include="Buffer\MemoryReadBufferAsyncTest.cs" />

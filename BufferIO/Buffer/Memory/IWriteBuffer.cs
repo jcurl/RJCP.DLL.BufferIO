@@ -34,6 +34,18 @@
         /// <value>The read buffer.</value>
         byte[] Buffer { get; }
 
+#if NETSTANDARD
+        /// <summary>
+        /// Gets a Span for the memory region that can be read from.
+        /// </summary>
+        /// <value>The Span for the memory region that can be read from.</value>
+        /// <remarks>
+        /// On .NET Core 2.1 and later, use this property instead of <see cref="Buffer"/>, <see cref="BufferStart"/>, <see cref="BufferReadLength"/>
+        /// <see cref="BufferPtr"/>. It's much simpler and safer.
+        /// </remarks>
+        ReadOnlySpan<byte> BufferSpan { get; }
+#endif
+
         /// <summary>
         /// Gets a value indicating whether the read buffer is not empty.
         /// </summary>

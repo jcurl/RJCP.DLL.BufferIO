@@ -37,6 +37,18 @@
         /// <value>The write buffer.</value>
         byte[] Buffer { get; }
 
+#if NETSTANDARD
+        /// <summary>
+        /// Gets a Span for the memory region that can be written to.
+        /// </summary>
+        /// <value>The Span for the memory region that can be written to.</value>
+        /// <remarks>
+        /// On .NET Core 2.1 and later, use this property instead of <see cref="Buffer"/>, <see cref="BufferEnd"/>, <see cref="BufferWriteLength"/>
+        /// <see cref="BufferPtr"/>. It's much simpler and safer.
+        /// </remarks>
+        Span<byte> BufferSpan { get; }
+#endif
+
         /// <summary>
         /// Gets a value indicating whether the write buffer is empty.
         /// </summary>

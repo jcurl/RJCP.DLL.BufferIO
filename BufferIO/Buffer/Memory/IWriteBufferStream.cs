@@ -1,5 +1,6 @@
 ﻿namespace RJCP.IO.Buffer.Memory
 {
+    using System;
     using System.Threading;
 
 #if NET45_OR_GREATER || NETSTANDARD
@@ -112,7 +113,7 @@
 #endif
 
         /// <summary>
-        /// Performs a non-blocking read, copying data from the memory buffer to the array specified.
+        /// Performs a non-blocking write, copying data from the memory buffer to the array specified.
         /// </summary>
         /// <param name="buffer">The buffer to copy data into.</param>
         /// <param name="offset">The offset into the buffer to copy into.</param>
@@ -121,6 +122,14 @@
         /// Returns the number of bytes copied, which may be less or equal to <paramref name="count"/>.
         /// </returns>
         void Write(byte[] buffer, int offset, int count);
+
+#if NETSTANDARD
+        /// <summary>
+        /// Performs a non-blocking write, copying data from the memory buffer to the array specified.
+        /// </summary>
+        /// <param name="buffer">A region of memory.</param>
+        void Write(ReadOnlySpan<byte> buffer);
+#endif
 
         /// <summary>
         /// Gets the number of bytes in the buffer still pending for writing.
