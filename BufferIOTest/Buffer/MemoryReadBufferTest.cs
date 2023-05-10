@@ -17,7 +17,7 @@
                 Assert.That(buffer.BufferPtr, Is.EqualTo(IntPtr.Zero));      // Not pinned, so is zero
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
                 Assert.That(buffer.IsBufferNotFull, Is.True);
-                Assert.That(buffer.Buffer.Length, Is.EqualTo(4096));
+                Assert.That(buffer.Buffer, Has.Length.EqualTo(4096));
                 Assert.That(buffer.BufferWriteLength, Is.EqualTo(4096));
                 Assert.That(buffer.IsDeviceDead, Is.False);
             }
@@ -31,7 +31,7 @@
                 Assert.That(buffer.BufferPtr, Is.Not.EqualTo(IntPtr.Zero));  // Pinned, so is real
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
                 Assert.That(buffer.IsBufferNotFull, Is.True);
-                Assert.That(buffer.Buffer.Length, Is.EqualTo(4096));
+                Assert.That(buffer.Buffer, Has.Length.EqualTo(4096));
                 Assert.That(buffer.BufferWriteLength, Is.EqualTo(4096));
                 Assert.That(buffer.IsDeviceDead, Is.False);
             }

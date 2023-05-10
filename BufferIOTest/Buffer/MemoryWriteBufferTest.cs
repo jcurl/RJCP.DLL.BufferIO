@@ -49,7 +49,7 @@
                 Assert.That(buffer.BytesFree, Is.EqualTo(4096));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(0));
                 Assert.That(buffer.IsBufferNotEmpty, Is.False);
-                Assert.That(buffer.Buffer.Length, Is.EqualTo(4096));
+                Assert.That(buffer.Buffer, Has.Length.EqualTo(4096));
                 Assert.That(buffer.BufferReadLength, Is.EqualTo(0));
                 Assert.That(buffer.IsDeviceDead, Is.False);
             }
@@ -64,7 +64,7 @@
                 Assert.That(buffer.BytesFree, Is.EqualTo(4096));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(0));
                 Assert.That(buffer.IsBufferNotEmpty, Is.False);
-                Assert.That(buffer.Buffer.Length, Is.EqualTo(4096));
+                Assert.That(buffer.Buffer, Has.Length.EqualTo(4096));
                 Assert.That(buffer.BufferReadLength, Is.EqualTo(0));
                 Assert.That(buffer.IsDeviceDead, Is.False);
             }
