@@ -3,6 +3,10 @@ namespace RJCP.IO
     using System;
     using System.Threading;
 
+#if NET45_OR_GREATER || NETSTANDARD
+    using System.Runtime.ExceptionServices;
+#endif
+
     /// <summary>
     /// Class for implementing an AsyncResult method.
     /// </summary>
@@ -112,7 +116,11 @@ namespace RJCP.IO
         private ManualResetEvent m_AsyncWaitHandle;
 
         // Fields set when operation completes
+#if NET45_OR_GREATER || NETSTANDARD
+        private ExceptionDispatchInfo m_Exception;
+#else
         private Exception m_Exception;
+#endif
 
         /// <summary>
         /// The object which started the operation.
@@ -218,7 +226,11 @@ namespace RJCP.IO
                 StateCompletedAsynchronously);
             if (prevState == StatePending) {
                 // Passing null for exception means no error occurred. This is the common case
+#if NET45_OR_GREATER || NETSTANDARD
+                m_Exception = exception == null ? null : ExceptionDispatchInfo.Capture(exception);
+#else
                 m_Exception = exception;
+#endif
 
                 // Do any processing before completion.
                 Completing(exception, completedSynchronously);
@@ -308,7 +320,13 @@ namespace RJCP.IO
             }
 
             // Operation is done: if an exception occurred, throw it
-            if (asyncResult.m_Exception != null) throw asyncResult.m_Exception;
+            if (asyncResult.m_Exception != null) {
+#if NET45_OR_GREATER || NETSTANDARD
+                asyncResult.m_Exception.Throw();
+#else
+                throw asyncResult.m_Exception;
+#endif
+            }
         }
 
         #region Implementation of IAsyncResult
