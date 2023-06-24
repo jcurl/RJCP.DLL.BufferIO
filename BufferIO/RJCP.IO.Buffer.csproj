@@ -19,9 +19,10 @@
     <PackageId>RJCP.IO.Buffer</PackageId>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/jcurl/RJCP.DLL.BufferIO</PackageProjectUrl>
     <Description>Provides functionality for buffered I/O.</Description>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
 
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
 
