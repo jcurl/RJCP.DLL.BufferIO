@@ -404,7 +404,7 @@
             get { return m_WriteBuffer.Array; }
         }
 
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD
         /// <summary>
         /// Gets a Span for the memory region that can be read from.
         /// </summary>

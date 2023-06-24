@@ -3,7 +3,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40;net45;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net40;net462;netstandard2.1</TargetFrameworks>
     <OutputType>Library</OutputType>
     <Configurations>Debug;Release</Configurations>
     <NeutralLanguage>en-US</NeutralLanguage>
@@ -14,7 +14,7 @@
     <RootNamespace>RJCP.IO</RootNamespace>
 
     <Authors>Jason Curl</Authors>
-    <Copyright>(C) 2011-2021, Jason Curl</Copyright>
+    <Copyright>(C) 2011-2023, Jason Curl</Copyright>
     <Company></Company>
     <PackageId>RJCP.IO.Buffer</PackageId>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
