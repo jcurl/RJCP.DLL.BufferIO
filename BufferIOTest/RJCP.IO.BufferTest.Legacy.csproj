@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
+  <!-- Implicit top import required explicitly to change build output path -->
+  <PropertyGroup>
+    <MSBUildProjectExtensionsPath>legacy</MSBUildProjectExtensionsPath>
+    <BaseIntermediateOutputPath>$(MSBUildProjectExtensionsPath)\obj</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(Configuration)' != ''">$(MSBUildProjectExtensionsPath)\bin\$(Configuration)</OutputPath>
+  </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
-    <TargetFrameworks>net462;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net48</TargetFrameworks>
     <OutputType>Library</OutputType>
     <IsPackable>false</IsPackable>
     <Configurations>Debug;Release</Configurations>
+    <DefineConstants>$(DefineConstants);NET40_LEGACY</DefineConstants>
 
-    <AssemblyName>RJCP.IO.BufferTest</AssemblyName>
+    <AssemblyName>RJCP.IO.BufferTest40</AssemblyName>
     <AssemblyTitle>RJCP.IO.BufferTest</AssemblyTitle>
     <Product>RJCP.IO.Buffer</Product>
     <RootNamespace>RJCP.IO</RootNamespace>
@@ -49,7 +57,9 @@
     <PackageReference Include="NUnit.Analyzers" Version="3.6.1" />
     <PackageReference Include="NUnit.ConsoleRunner" Version="3.16.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
-    <ProjectReference Include="..\BufferIO\RJCP.IO.Buffer.csproj" />
+    <ProjectReference Include="..\BufferIO\RJCP.IO.Buffer.csproj">
+      <SetTargetFramework>TargetFramework=net40</SetTargetFramework>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -58,9 +68,7 @@
     <Compile Include="Buffer\CircularBufferCopyTest.cs" />
     <Compile Include="Buffer\CircularBufferExtensionsTest.cs" />
     <Compile Include="Buffer\CircularBufferTest.cs" />
-    <Compile Include="Buffer\MemoryReadBufferAsyncTest.cs" />
     <Compile Include="Buffer\MemoryReadBufferTest.cs" />
-    <Compile Include="Buffer\MemoryWriteBufferAsyncTest.cs" />
     <Compile Include="Buffer\MemoryWriteBufferTest.cs" />
     <Compile Include="Buffer\WriteOverload.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -69,4 +77,6 @@
     <Compile Include="Timer\TimerExpiryTest.cs" />
   </ItemGroup>
 
+  <!-- Implicit top import required explicitly to change build output path -->
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
