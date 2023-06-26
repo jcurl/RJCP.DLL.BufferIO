@@ -455,9 +455,6 @@
         /// </summary>
         /// <param name="array">Array to copy from.</param>
         /// <returns>Number of bytes copied.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> may not be <see langword="null"/>.
-        /// </exception>
         /// <remarks>
         /// Data is copied to the end of the Circular Buffer. The amount of data that could be copied is dependent on
         /// the amount of free space. The result is the number of elements from <paramref name="array"/> that is copied
@@ -465,8 +462,6 @@
         /// </remarks>
         public int Append(ReadOnlySpan<T> array)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
-
             int length = array.Length;
             if (length <= WriteLength) {
                 array.CopyTo(m_Array.AsSpan(End, length));
@@ -724,15 +719,12 @@
         /// </summary>
         /// <param name="array">The span array to copy the data to.</param>
         /// <returns>The number of bytes that were copied.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
         /// <remarks>
         /// Data is copied from the circular buffer into the array specified, at the offset given. The data from the
         /// Circular Buffer is <i>not</i> consumed. You must do this yourself. Else use the MoveTo() method.
         /// </remarks>
         public int CopyTo(Span<T> array)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
-
             int length = array.Length;
             if (length <= ReadLength) {
                 // The block of data is one continuous block to copy
