@@ -6,7 +6,7 @@
     using Memory;
     using Timer;
 
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
     using System.Threading.Tasks;
 #endif
 
@@ -176,7 +176,7 @@
             return WaitForReadInternal(count, timeout, token);
         }
 
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
         /// <summary>
         /// Waits up to <paramref name="timeout"/> milliseconds for data to be available to read.
         /// </summary>
@@ -315,7 +315,7 @@
             }
         }
 
-#if NETSTANDARD
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Reads a sequence of bytes from the current stream and advances the position within the stream by the number
         /// of bytes read.
@@ -441,7 +441,7 @@
             get { return m_ReadBuffer.Array; }
         }
 
-#if NETSTANDARD
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Gets a Span for the memory region that can be written to.
         /// </summary>

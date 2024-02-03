@@ -34,7 +34,7 @@
         /// <value>The read buffer.</value>
         byte[] Buffer { get; }
 
-#if NETSTANDARD
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Gets a Span for the memory region that can be read from.
         /// </summary>

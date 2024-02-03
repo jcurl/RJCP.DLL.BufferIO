@@ -3,7 +3,7 @@
     using System;
     using System.Threading;
 
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
     using System.Threading.Tasks;
 #endif
 
@@ -37,7 +37,7 @@
         /// </returns>
         bool WaitForWrite(int count, int timeout, CancellationToken token);
 
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
         /// <summary>
         /// Waits up to <paramref name="timeout"/> milliseconds to write at least <paramref name="count"/> bytes.
         /// </summary>
@@ -87,7 +87,7 @@
         /// </returns>
         bool WaitForEmpty(int timeout, CancellationToken token);
 
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
         /// <summary>
         /// Waits for the write buffer to become empty.
         /// </summary>
@@ -123,7 +123,7 @@
         /// </returns>
         void Write(byte[] buffer, int offset, int count);
 
-#if NETSTANDARD
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Performs a non-blocking write, copying data from the memory buffer to the array specified.
         /// </summary>

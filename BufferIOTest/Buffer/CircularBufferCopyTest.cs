@@ -339,7 +339,7 @@
             }));
         }
 
-#if NETCOREAPP
+#if NET6_0_OR_GREATER
         [TestCase(false, TestName = "MoveToSpanZeroOffsetPartial")]
         [TestCase(true, TestName = "CopyToSpanZeroOffsetPartial")]
         public void CopyToSpanZeroOffsetPartial(bool copy)

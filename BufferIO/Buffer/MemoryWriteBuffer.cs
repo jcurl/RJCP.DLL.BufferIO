@@ -6,7 +6,7 @@
     using Memory;
     using Timer;
 
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
     using System.Threading.Tasks;
 #endif
 
@@ -163,7 +163,7 @@
             return WaitForWriteEventInternal(count, timeout, token);
         }
 
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
         /// <summary>
         /// Waits up to <paramref name="timeout"/> milliseconds to write at least <paramref name="count"/> bytes.
         /// </summary>
@@ -311,7 +311,7 @@
             }
         }
 
-#if NETSTANDARD
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Performs a non-blocking write, copying data from the memory buffer to the array specified.
         /// </summary>
@@ -404,7 +404,7 @@
             get { return m_WriteBuffer.Array; }
         }
 
-#if NETSTANDARD
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Gets a Span for the memory region that can be read from.
         /// </summary>

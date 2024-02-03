@@ -732,7 +732,7 @@
             }
         }
 
-#if NETCOREAPP
+#if NET6_0_OR_GREATER
         [Test]
         public void ReadSpan()
         {

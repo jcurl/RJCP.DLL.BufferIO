@@ -3,7 +3,7 @@ namespace RJCP.IO
     using System;
     using System.Threading;
 
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
     using System.Runtime.ExceptionServices;
 #endif
 
@@ -116,7 +116,7 @@ namespace RJCP.IO
         private ManualResetEvent m_AsyncWaitHandle;
 
         // Fields set when operation completes
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
         private ExceptionDispatchInfo m_Exception;
 #else
         private Exception m_Exception;
@@ -226,7 +226,7 @@ namespace RJCP.IO
                 StateCompletedAsynchronously);
             if (prevState == StatePending) {
                 // Passing null for exception means no error occurred. This is the common case
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
                 m_Exception = exception == null ? null : ExceptionDispatchInfo.Capture(exception);
 #else
                 m_Exception = exception;
@@ -321,7 +321,7 @@ namespace RJCP.IO
 
             // Operation is done: if an exception occurred, throw it
             if (asyncResult.m_Exception != null) {
-#if NET45_OR_GREATER || NETSTANDARD
+#if NET45_OR_GREATER || NET6_0_OR_GREATER
                 asyncResult.m_Exception.Throw();
 #else
                 throw asyncResult.m_Exception;

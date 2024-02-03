@@ -449,7 +449,7 @@
             return count;
         }
 
-#if NETSTANDARD
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Copy data from array to the end of this circular buffer and update the length.
         /// </summary>
@@ -637,7 +637,7 @@
             return l;
         }
 
-#if NETSTANDARD
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Copy data from the circular buffer to the span array and then consume the data from the circular buffer.
         /// </summary>
@@ -713,7 +713,7 @@
             return count;
         }
 
-#if NETSTANDARD
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Copy data from the circular buffer to the span array.
         /// </summary>
