@@ -137,8 +137,8 @@
         /// </remarks>
         public static void Convert(this Decoder decoder, CircularBuffer<byte> bytes, char[] chars, int charIndex, int charCount, bool flush, out int bytesUsed, out int charsUsed, out bool completed)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            if (chars == null) throw new ArgumentNullException(nameof(chars));
+            ThrowHelper.ThrowIfNull(bytes);
+            ThrowHelper.ThrowIfNull(chars);
             if (charIndex < 0) throw new ArgumentOutOfRangeException(nameof(charIndex), "may not be negative");
             if (charCount < 0) throw new ArgumentOutOfRangeException(nameof(charCount), "may not be negative");
             if (chars.Length - charIndex < charCount) throw new ArgumentException("charIndex and charCount exceed char buffer boundaries");
@@ -211,8 +211,8 @@
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="charCount"/> may not be negative.</exception>
         public static void Convert(this Decoder decoder, CircularBuffer<byte> bytes, CircularBuffer<char> chars, int charCount, bool flush, out int bytesUsed, out int charsUsed, out bool completed)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            if (chars == null) throw new ArgumentNullException(nameof(chars));
+            ThrowHelper.ThrowIfNull(bytes);
+            ThrowHelper.ThrowIfNull(chars);
 
             charCount = Math.Min(chars.Free, charCount);
             bytesUsed = 0;
@@ -295,8 +295,8 @@
         /// </exception>
         public static void Convert(this Decoder decoder, CircularBuffer<byte> bytes, CircularBuffer<char> chars, bool flush, out int bytesUsed, out int charsUsed, out bool completed)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            if (chars == null) throw new ArgumentNullException(nameof(chars));
+            ThrowHelper.ThrowIfNull(bytes);
+            ThrowHelper.ThrowIfNull(chars);
             decoder.Convert(bytes, chars, chars.Free, flush, out bytesUsed, out charsUsed, out completed);
         }
 
@@ -337,8 +337,8 @@
         /// </exception>
         public static void Convert(this Decoder decoder, byte[] bytes, int byteIndex, int byteCount, CircularBuffer<char> chars, bool flush, out int bytesUsed, out int charsUsed, out bool completed)
         {
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-            if (chars == null) throw new ArgumentNullException(nameof(chars));
+            ThrowHelper.ThrowIfNull(bytes);
+            ThrowHelper.ThrowIfNull(chars);
             if (byteIndex < 0) throw new ArgumentOutOfRangeException(nameof(byteIndex), "may not be negative");
             if (byteCount < 0) throw new ArgumentOutOfRangeException(nameof(byteCount), "may not be negative");
             if (bytes.Length - byteIndex < byteCount) throw new ArgumentException("byteIndex and byteCount exceed byte buffer boundaries");
@@ -436,8 +436,8 @@
             // The code here is the same as the "Decoder" version as they do the same thing. Unfortunately, .NET doesn't
             // have a base class for this, so we need two separate encoder/decoder methods.
 
-            if (chars == null) throw new ArgumentNullException(nameof(chars));
-            if (bytes == null) throw new ArgumentNullException(nameof(bytes));
+            ThrowHelper.ThrowIfNull(chars);
+            ThrowHelper.ThrowIfNull(bytes);
             if (charIndex < 0) throw new ArgumentOutOfRangeException(nameof(charIndex), "may not be negative");
             if (charCount < 0) throw new ArgumentOutOfRangeException(nameof(charCount), "may not be negative");
             if (chars.Length - charIndex < charCount) throw new ArgumentException("charIndex and charCount exceed char buffer boundaries");

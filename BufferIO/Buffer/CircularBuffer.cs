@@ -57,7 +57,7 @@
         /// </remarks>
         public CircularBuffer(T[] array)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
+            ThrowHelper.ThrowIfNull(array);
             if (array.Length == 0) throw new ArgumentException("Array must have at least one element", nameof(array));
             m_Array = array;
             m_Start = 0;
@@ -83,7 +83,7 @@
         /// </remarks>
         public CircularBuffer(T[] array, int count)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
+            ThrowHelper.ThrowIfNull(array);
             if (array.Length == 0) throw new ArgumentException("Array must have at least one element", nameof(array));
             if (count < 0 || count > array.Length)
                 throw new ArgumentOutOfRangeException(nameof(count), "Count must be within range of the array");
@@ -119,7 +119,7 @@
         /// </remarks>
         public CircularBuffer(T[] array, int offset, int count)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
+            ThrowHelper.ThrowIfNull(array);
             if (array.Length == 0) throw new ArgumentException("Array must have at least one element", nameof(array));
             if (count < 0 || count > array.Length)
                 throw new ArgumentOutOfRangeException(nameof(count), "must be within range of the array");
@@ -404,7 +404,7 @@
         /// </remarks>
         public int Append(T[] array)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
+            ThrowHelper.ThrowIfNull(array);
             return Append(array, 0, array.Length);
         }
 
@@ -431,7 +431,7 @@
         /// </remarks>
         public int Append(T[] array, int offset, int count)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
+            ThrowHelper.ThrowIfNull(array);
             if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), "may not be negative");
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "may not be negative");
             if (offset > array.Length - count) throw new ArgumentException("Parameters exceed array boundary");
@@ -542,7 +542,7 @@
         /// </remarks>
         public int Append(CircularBuffer<T> buffer, int offset, int count)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            ThrowHelper.ThrowIfNull(buffer);
             if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), "may not be negative");
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "may not be negative");
             if (offset > buffer.Length - count) throw new ArgumentException("Parameters exceed buffer boundary");
@@ -670,7 +670,7 @@
         /// </remarks>
         public int CopyTo(T[] array)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
+            ThrowHelper.ThrowIfNull(array);
             return CopyTo(array, 0, array.Length);
         }
 
@@ -696,7 +696,7 @@
         /// </remarks>
         public int CopyTo(T[] array, int offset, int count)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
+            ThrowHelper.ThrowIfNull(array);
             if (count == 0) return 0;
             if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), "may not be negative");
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "may not be negative");
@@ -808,7 +808,7 @@
         /// </exception>
         public int Substring(T[] elements, int offset)
         {
-            if (elements == null) throw new ArgumentNullException(nameof(elements));
+            ThrowHelper.ThrowIfNull(elements);
             if (offset < 0 || offset > m_Count) throw new ArgumentOutOfRangeException(nameof(offset), "out of range [0..Length-1]");
 
             int count = m_Count - offset;
