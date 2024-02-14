@@ -227,7 +227,7 @@ namespace RJCP.IO
             if (prevState == StatePending) {
                 // Passing null for exception means no error occurred. This is the common case
 #if NET45_OR_GREATER || NET6_0_OR_GREATER
-                m_Exception = exception == null ? null : ExceptionDispatchInfo.Capture(exception);
+                m_Exception = exception is null ? null : ExceptionDispatchInfo.Capture(exception);
 #else
                 m_Exception = exception;
 #endif
@@ -236,7 +236,7 @@ namespace RJCP.IO
                 Completing(exception, completedSynchronously);
 
                 // If the event exists, set it
-                if (m_AsyncWaitHandle != null) m_AsyncWaitHandle.Set();
+                if (m_AsyncWaitHandle is not null) m_AsyncWaitHandle.Set();
 
                 MakeCallback(m_AsyncCallback, this);
 
@@ -276,7 +276,7 @@ namespace RJCP.IO
         /// especially useful if this needs to be checked before calling <see cref="End"/> as part of your <c>EndXXX</c>
         /// method.
         /// </remarks>
-        protected bool HasExceptionOccurred { get { return m_Exception != null; } }
+        protected bool HasExceptionOccurred { get { return m_Exception is not null; } }
 
         /// <summary>
         /// Called by your own <c>EndXXX</c> method, to clean up resources and wait for a result if not already
@@ -305,7 +305,7 @@ namespace RJCP.IO
         /// </remarks>
         public static void End(IAsyncResult result, object owner, string operationId)
         {
-            if (!(result is AsyncResult asyncResult)) {
+            if (result is not AsyncResult asyncResult) {
                 throw new ArgumentException(Resources.AsyncResult_UnsupportedResult, nameof(result));
             }
 
@@ -320,7 +320,7 @@ namespace RJCP.IO
             }
 
             // Operation is done: if an exception occurred, throw it
-            if (asyncResult.m_Exception != null) {
+            if (asyncResult.m_Exception is not null) {
 #if NET45_OR_GREATER || NET6_0_OR_GREATER
                 asyncResult.m_Exception.Throw();
 #else
@@ -379,11 +379,11 @@ namespace RJCP.IO
         {
             get
             {
-                if (m_AsyncWaitHandle == null) {
+                if (m_AsyncWaitHandle is null) {
                     bool done = IsCompleted;
-                    ManualResetEvent mre = new ManualResetEvent(done);
+                    ManualResetEvent mre = new(done);
                     if (Interlocked.CompareExchange(ref m_AsyncWaitHandle,
-                        mre, null) != null) {
+                        mre, null) is not null) {
                         // Another thread created this object's event; dispose the event we just created
                         mre.Close();
                     } else {

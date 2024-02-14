@@ -16,7 +16,7 @@
         /// <remarks>This method will not consume the data in the CircularBuffer{char}.</remarks>
         public static string GetString(this CircularBuffer<char> buff)
         {
-            if (buff == null) return null;
+            if (buff is null) return null;
             return buff.GetString(buff.Length);
         }
 
@@ -29,11 +29,11 @@
         /// <remarks>This method will not consume the data in the CircularBuffer{char}.</remarks>
         public static string GetString(this CircularBuffer<char> buff, int length)
         {
-            if (buff == null) return null;
+            if (buff is null) return null;
             if (length == 0) return string.Empty;
             if (length > buff.Length) length = buff.Length;
             if (buff.Start + length > buff.Capacity) {
-                StringBuilder sb = new StringBuilder(length);
+                StringBuilder sb = new(length);
                 sb.Append(buff.Array, buff.Start, buff.Capacity - buff.Start);
                 sb.Append(buff.Array, 0, length + buff.Start - buff.Capacity);
                 return sb.ToString();
@@ -53,14 +53,14 @@
         /// <remarks>This method will not consume the data in the CircularBuffer{char}.</remarks>
         public static string GetString(this CircularBuffer<char> buff, int offset, int length)
         {
-            if (buff == null) return null;
+            if (buff is null) return null;
             if (length == 0) return string.Empty;
             if (offset > buff.Length) return string.Empty;
             if (offset + length > buff.Length) length = buff.Length - offset;
 
             int start = (buff.Start + offset) % buff.Capacity;
             if (start + length > buff.Capacity) {
-                StringBuilder sb = new StringBuilder(length);
+                StringBuilder sb = new(length);
                 sb.Append(buff.Array, start, buff.Capacity - start);
                 sb.Append(buff.Array, 0, length + start - buff.Capacity);
                 return sb.ToString();
@@ -158,7 +158,7 @@
                         chars, charIndex, charCount,
                         outFlush, out bu, out cu, out completed);
                 } catch (ArgumentException e) {
-                    if (e.ParamName == null || !e.ParamName.Equals("chars")) throw;
+                    if (e.ParamName is null || !e.ParamName.Equals("chars")) throw;
 
                     // NOTE: While a decoder may not consume anything, using the CircularBuffer extension may, if the
                     // bytes need to be passed to the decoder twice. This is because we can't know what bytes may cause
@@ -233,7 +233,7 @@
                     chars.Produce(cu);
                     rl = bytes.ReadLength;
                 } catch (ArgumentException e) {
-                    if (e.ParamName == null || !e.ParamName.Equals("chars")) throw;
+                    if (e.ParamName is null || !e.ParamName.Equals("chars")) throw;
 
                     // Decoder tried to write bytes, but not enough free space. We need to write to a temp array, then
                     // copy into the circular buffer. We assume that the underlying decoder hasn't changed state.
@@ -250,7 +250,7 @@
                         decoder.Convert(bytes.Array, bytes.Start, rl,
                             tmp, 0, tmp.Length, outFlush, out bu, out cu, out completed);
                     } catch (ArgumentException e2) {
-                        if (e2.ParamName == null || !e2.ParamName.Equals("chars")) throw;
+                        if (e2.ParamName is null || !e2.ParamName.Equals("chars")) throw;
                         if (bytesUsed == 0) throw;
                         completed = false;
                         return;
@@ -365,7 +365,7 @@
                     chars.Produce(cu);
                     charsUsed += cu;
                 } catch (ArgumentException e) {
-                    if (e.ParamName == null || !e.ParamName.Equals("chars")) throw;
+                    if (e.ParamName is null || !e.ParamName.Equals("chars")) throw;
 
                     // Decoder tried to write bytes, but not enough free space. We need to write to a temp array, then
                     // copy into the circular buffer. We assume that the underlying decoder hasn't changed state.
@@ -383,7 +383,7 @@
                             tmp, 0, tmp.Length, flush, out bu, out cu, out completed);
                     } catch (ArgumentException e2) {
                         // There still isn't enough space, so abort
-                        if (e2.ParamName == null || !e2.ParamName.Equals("chars")) throw;
+                        if (e2.ParamName is null || !e2.ParamName.Equals("chars")) throw;
                         if (bytesUsed == 0) throw;
                         completed = false;
                         return;
@@ -465,7 +465,7 @@
                     bytes.Produce(bu);
                     bytesUsed += bu;
                 } catch (ArgumentException e) {
-                    if (e.ParamName == null || !e.ParamName.Equals("bytes")) throw;
+                    if (e.ParamName is null || !e.ParamName.Equals("bytes")) throw;
 
                     // Encoder tried to write chars, but not enough free space. We need to write to a temp array, then
                     // copy into the circular buffer. We assume that the underlying encoder hasn't changed state.
@@ -483,7 +483,7 @@
                             tmp, 0, tmp.Length, flush, out cu, out bu, out completed);
                     } catch (ArgumentException e2) {
                         // There still isn't enough space, so abort
-                        if (e2.ParamName == null || !e2.ParamName.Equals("bytes")) throw;
+                        if (e2.ParamName is null || !e2.ParamName.Equals("bytes")) throw;
                         if (charsUsed == 0) throw;
                         completed = false;
                         return;

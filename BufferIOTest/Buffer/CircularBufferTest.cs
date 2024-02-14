@@ -71,7 +71,7 @@
         [Test]
         public void CircularBuffer_ProduceConsume()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(50);
+            CircularBuffer<byte> cb = new(50);
             Assert.That(cb.Capacity, Is.EqualTo(50));
 
             // Initial state
@@ -160,7 +160,7 @@
         [Test]
         public void CircularBuffer_Indexing()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(50);
+            CircularBuffer<byte> cb = new(50);
 
             // Write into the array directly
             for (int i = 0; i < cb.Array.Length; i++) {
@@ -193,7 +193,7 @@
         [Test]
         public void CircularBuffer_ReadBlock()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(50);
+            CircularBuffer<byte> cb = new(50);
 
             // Move the pointer to the middle
             cb.Produce(25);
@@ -216,7 +216,7 @@
         [Test]
         public void CircularBuffer_Revert()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(50);
+            CircularBuffer<byte> cb = new(50);
 
             // Move the pointer to the middle
             cb.Produce(25);
@@ -253,13 +253,13 @@
         [Test]
         public void CircularBuffer_ReadWrite()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(50);
+            CircularBuffer<byte> cb = new(50);
             cb.Produce(25);
             cb.Consume(25);
             cb.Produce(50);
 
             byte[] rd = new byte[50];
-            Random r = new Random();
+            Random r = new();
             r.NextBytes(rd);
 
             for (int i = 0; i < rd.Length; i++) {
@@ -284,19 +284,19 @@
                 0x20, 0x3D, 0x20, 0x31, 0x30, 0x29, 0x00,
                 0xA6, 0x73 };
 
-            CircularBuffer<byte> cb1 = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb1 = new(m);
             Assert.That(cb1.Length, Is.EqualTo(m.Length));
             Assert.That(cb1.Free, Is.EqualTo(0));
             Assert.That(cb1.Start, Is.EqualTo(0));
             Assert.That(cb1[0], Is.EqualTo(0x80));
 
-            CircularBuffer<byte> cb2 = new CircularBuffer<byte>(m, 10);
+            CircularBuffer<byte> cb2 = new(m, 10);
             Assert.That(cb2.Length, Is.EqualTo(10));
             Assert.That(cb2.Free, Is.EqualTo(m.Length - 10));
             Assert.That(cb2.Start, Is.EqualTo(0));
             Assert.That(cb2[0], Is.EqualTo(0x80));
 
-            CircularBuffer<byte> cb3 = new CircularBuffer<byte>(m, 15, 10);
+            CircularBuffer<byte> cb3 = new(m, 15, 10);
             Assert.That(cb3.Length, Is.EqualTo(10));
             Assert.That(cb3.Free, Is.EqualTo(m.Length - 10));
             Assert.That(cb3.Start, Is.EqualTo(15));
@@ -316,7 +316,7 @@
                 0x20, 0x3D, 0x20, 0x31, 0x30, 0x29, 0x00,
                 0xA6, 0x76 };
 
-            CircularBuffer<byte> cb1 = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb1 = new(m);
             Assert.That(cb1.Substring(0x00), Is.EqualTo(1));
             Assert.That(cb1.Substring(0x2F), Is.EqualTo(2));
             Assert.That(cb1.Substring(0x80), Is.EqualTo(0));
@@ -348,7 +348,7 @@
                0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F,
             };
 
-            CircularBuffer<byte> cb1 = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb1 = new(m);
             cb1.Consume(0x20);
             cb1.Append(new byte[] { 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47 });
             Assert.That(cb1.Substring(0x20), Is.EqualTo(0));
@@ -373,7 +373,7 @@
                 0x20, 0x3D, 0x20, 0x31, 0x30, 0x29, 0x00,
                 0xA6, 0x76 };
 
-            CircularBuffer<byte> cb1 = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb1 = new(m);
 
             Assert.That(() => { _ = cb1.Substring(0x00, -1); }, Throws.TypeOf<ArgumentOutOfRangeException>());
         }
@@ -391,7 +391,7 @@
                 0x20, 0x3D, 0x20, 0x31, 0x30, 0x29, 0x00,
                 0xA6, 0x76 };
 
-            CircularBuffer<byte> cb1 = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb1 = new(m);
 
             // Note, in .NET, the string.SubString will also work for x.SubString(x.Length) and return empty.
             Assert.That(() => { cb1.Substring(0x00, m.Length + 1); }, Throws.TypeOf<ArgumentOutOfRangeException>());
@@ -410,7 +410,7 @@
                 0x20, 0x3D, 0x20, 0x31, 0x30, 0x29, 0x00,
                 0xA6, 0x76 };
 
-            CircularBuffer<byte> cb1 = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb1 = new(m);
 
             // Note, in .NET, the string.SubString will also work for x.SubString(x.Length) and return empty.
             Assert.That(cb1.Substring(0x76, m.Length), Is.EqualTo(-1));
@@ -429,7 +429,7 @@
                 0x20, 0x3D, 0x20, 0x31, 0x30, 0x29, 0x00,
                 0xA6, 0x76 };
 
-            CircularBuffer<byte> cb1 = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb1 = new(m);
             Assert.That(cb1.Substring(0x00, 1), Is.EqualTo(1));
             Assert.That(cb1.Substring(0x00, 2), Is.EqualTo(6));
             Assert.That(cb1.Substring(0x2F, 2), Is.EqualTo(2));
@@ -443,7 +443,7 @@
                 0x41, 0x42, 0x43, 0x0d, 0x0a, 0x44, 0x45, 0x46, 0x0d, 0x0a
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb = new(m);
             Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }), Is.EqualTo(3));
             cb.Consume(1);
             Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }), Is.EqualTo(2));
@@ -464,7 +464,7 @@
                 0x41, 0x42, 0x43, 0x0d, 0x0a, 0x44, 0x45, 0x46, 0x0d, 0x0a
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb = new(m);
             Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }, 0), Is.EqualTo(3));
             Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }, 1), Is.EqualTo(3));
             Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }, 2), Is.EqualTo(3));
@@ -490,7 +490,7 @@
                 0x20, 0x3D, 0x20, 0x31, 0x30, 0x29, 0x00,
                 0xA6, 0x76 };
 
-            CircularBuffer<byte> cb1 = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb1 = new(m);
 
             Assert.That(() => { cb1.Substring(new byte[] { 0x00, 0x02 }, -1); }, Throws.TypeOf<ArgumentOutOfRangeException>());
         }
@@ -508,7 +508,7 @@
                 0x20, 0x3D, 0x20, 0x31, 0x30, 0x29, 0x00,
                 0xA6, 0x76 };
 
-            CircularBuffer<byte> cb1 = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb1 = new(m);
 
             // Note, in .NET, the string.SubString will also work for x.SubString(x.Length) and return empty.
             Assert.That(() => { cb1.Substring(new byte[] { 0x00, 0x02 }, m.Length + 1); }, Throws.TypeOf<ArgumentOutOfRangeException>());
@@ -527,7 +527,7 @@
                 0x20, 0x3D, 0x20, 0x31, 0x30, 0x29, 0x00,
                 0xA6, 0x76 };
 
-            CircularBuffer<byte> cb1 = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb1 = new(m);
 
             // Note, in .NET, the string.SubString will also work for x.SubString(x.Length) and return empty.
             Assert.That(cb1.Substring(new byte[] { 0xA6, 0x76 }, m.Length), Is.EqualTo(-1));

@@ -11,7 +11,7 @@
         [Timeout(1000)]
         public void TimerExpiry_Basic()
         {
-            TimerExpiry te = new TimerExpiry(200);
+            TimerExpiry te = new(200);
             int t = te.RemainingTime();
             Assert.That(t, Is.GreaterThan(140), "Timer is less than 140ms (should be close to 200ms), remaining={0}", t);
 
@@ -46,7 +46,7 @@
         [Timeout(5000)]
         public void TimerExpiry_Reset()
         {
-            TimerExpiry te = new TimerExpiry(1000);
+            TimerExpiry te = new(1000);
             Thread.Sleep(250);
             Assert.That(te.RemainingTime(), Is.GreaterThan(600));
             te.Reset();
@@ -75,7 +75,7 @@
         [Timeout(5000)]
         public void TimerExpiry_Reset2()
         {
-            TimerExpiry te = new TimerExpiry(1000);
+            TimerExpiry te = new(1000);
             Thread.Sleep(250);
             Assert.That(te.RemainingTime(), Is.GreaterThan(600));
             Thread.Sleep(250);
@@ -92,12 +92,12 @@
         [Timeout(2000)]
         public void TimerExpiry_Negative()
         {
-            TimerExpiry te = new TimerExpiry(-1);
+            TimerExpiry te = new(-1);
             Assert.That(te.RemainingTime(), Is.EqualTo(Timeout.Infinite));
             Thread.Sleep(100);
             Assert.That(te.RemainingTime(), Is.EqualTo(Timeout.Infinite));
 
-            TimerExpiry te2 = new TimerExpiry(100);
+            TimerExpiry te2 = new(100);
             Assert.That(te2.RemainingTime(), Is.GreaterThan(0));
             te2.Timeout = -1;
             Assert.That(te.RemainingTime(), Is.EqualTo(Timeout.Infinite));
@@ -108,7 +108,7 @@
         [Test]
         public void TimerExpiry_Zero()
         {
-            TimerExpiry te = new TimerExpiry(0);
+            TimerExpiry te = new(0);
             Assert.That(te.Expired, Is.True);
             Assert.That(te.RemainingTime(), Is.EqualTo(0));
         }
@@ -123,7 +123,7 @@
         [Test]
         public void TimerExpiry_TimeoutInvalidValue()
         {
-            TimerExpiry te = new TimerExpiry(200);
+            TimerExpiry te = new(200);
             Assert.That(te.Expired, Is.False);
             Assert.That(te.Timeout, Is.EqualTo(200));
             Assert.That(te.RemainingTime(), Is.GreaterThan(0).And.LessThanOrEqualTo(200));
@@ -139,7 +139,7 @@
         [Test]
         public void TimerExpiry_LargeTimeout()
         {
-            TimerExpiry te = new TimerExpiry(0x7FFFFFFF);
+            TimerExpiry te = new(0x7FFFFFFF);
             Assert.That(te.Expired, Is.False);
             Assert.That(te.Timeout, Is.EqualTo(0x7FFFFFFF));
             Assert.That(te.RemainingTime(), Is.GreaterThan(0x7FFFFFFF - 100).And.LessThanOrEqualTo(0x7FFFFFFF));

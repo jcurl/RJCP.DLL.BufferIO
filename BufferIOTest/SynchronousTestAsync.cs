@@ -17,7 +17,7 @@
 
         public IAsyncResult BeginTest(AsyncCallback callback, object state)
         {
-            SynchronousTestAsyncResult result = new SynchronousTestAsyncResult(callback, state, this, nameof(BeginTest));
+            SynchronousTestAsyncResult result = new(callback, state, this, nameof(BeginTest));
             result.Process();
             return result;
         }
@@ -29,7 +29,7 @@
 
         public IAsyncResult BeginSecondTest(AsyncCallback callback, object state)
         {
-            SynchronousTestAsyncResult result = new SynchronousTestAsyncResult(callback, state, this, nameof(BeginSecondTest));
+            SynchronousTestAsyncResult result = new(callback, state, this, nameof(BeginSecondTest));
             result.Process();
             return result;
         }

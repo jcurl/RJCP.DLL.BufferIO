@@ -20,16 +20,16 @@
     public class MemoryWriteBuffer : IWriteBufferStream, IWriteBuffer, IDisposable
     {
         private readonly bool m_IsPinned;
-        private readonly object m_Lock = new object();
+        private readonly object m_Lock = new();
         private readonly CircularBuffer<byte> m_WriteBuffer;
         private readonly GCHandle m_WriteHandle;
         private volatile bool m_DeviceDead;
-        private readonly ManualResetEventSlim m_BufferNotEmpty = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim m_BufferNotEmpty = new(false);
 
         // The m_WriteEvent is used to signal a change that when waiting, conditions can be checked. Conditions are
         // related to the state of m_WriteBuffer and m_DeviceDead. The event must be wrapped around a lock with m_Lock
         // when changing the state, or when checking the state and setting or resetting this event.
-        private readonly ManualResetEventSlim m_WriteEvent = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim m_WriteEvent = new(false);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryReadBuffer"/> class for a particular size and no pinned buffers.
@@ -261,7 +261,7 @@
 
         private bool WaitForWriteEventInternal(int count, int timeout, CancellationToken token)
         {
-            TimerExpiry timer = new TimerExpiry(timeout);
+            TimerExpiry timer = new(timeout);
             int realTimeout = timeout;
             do {
                 try {

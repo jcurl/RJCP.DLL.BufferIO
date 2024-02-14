@@ -15,11 +15,11 @@
         [Repeat(200)]
         public async Task WaitForReadAsync()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Task producer = new TaskFactory().StartNew(() => {
                     // Try to randomize the order in which things run to look for race conditions.
-                    Random r1 = new Random();
+                    Random r1 = new();
                     if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                     lock (buffer.Lock) {
@@ -28,7 +28,7 @@
                 });
 
                 // Try to randomize the order in which things run to look for race conditions.
-                Random r2 = new Random();
+                Random r2 = new();
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
 
                 Assert.That(await buffer.WaitForReadAsync(Timeout.Infinite), Is.True);
@@ -41,7 +41,7 @@
         [TestCase(100, true, TestName = "WaitForReadAsyncZeroTimeoutWithData")]
         public async Task WaitForReadAsyncZeroTimeout(int produce, bool result)
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 if (produce > 0) buffer.Produce(produce);
                 Assert.That(await buffer.WaitForReadAsync(0), Is.EqualTo(result));
                 Assert.That(buffer.BytesToRead, Is.EqualTo(produce));
@@ -51,7 +51,7 @@
         [Test]
         public async Task WaitForReadAsyncByteToEmpty()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 buffer.Produce(1);
                 Assert.That(await buffer.WaitForReadAsync(0), Is.True);
                 Assert.That(await buffer.WaitForReadAsync(1), Is.True);
@@ -67,7 +67,7 @@
         [Test]
         public async Task WaitForReadAsyncToEmpty()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 byte[] data = new byte[1];
 
                 buffer.Produce(1);
@@ -86,17 +86,17 @@
         [Repeat(200)]
         public async Task WaitForReadAsyncDeviceDead()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Task driver = new TaskFactory().StartNew(() => {
                     // Try to randomize the order in which things run to look for race conditions.
-                    Random r1 = new Random();
+                    Random r1 = new();
                     if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                     buffer.DeviceDead();
                 });
 
                 // Try to randomize the order in which things run to look for race conditions.
-                Random r2 = new Random();
+                Random r2 = new();
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
 
                 Assert.That(await buffer.WaitForReadAsync(Timeout.Infinite), Is.False);
@@ -109,7 +109,7 @@
         [Test]
         public async Task WaitForReadAsyncDeadProducedData()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 // Even though the device died, there is still data in the buffer, so this takes precedence.
                 buffer.Produce(100);
                 buffer.DeviceDead();
@@ -126,7 +126,7 @@
         [Test]
         public async Task WaitForReadAsyncCountDeadProducedData()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 // Even though the device died, there is still data in the buffer, so this takes precedence.
                 buffer.Produce(100);
                 buffer.DeviceDead();
@@ -143,8 +143,8 @@
         [Test]
         public async Task WaitForReadAsyncCancellationTokenDeadProducedData()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 // Even though the device died, there is still data in the buffer, so this takes precedence.
                 buffer.Produce(100);
                 buffer.DeviceDead();
@@ -161,8 +161,8 @@
         [Test]
         public async Task WaitForReadCountCancellationTokenDeadProducedData()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 // Even though the device died, there is still data in the buffer, so this takes precedence.
                 buffer.Produce(100);
                 buffer.DeviceDead();
@@ -185,13 +185,13 @@
                 buffer = new MemoryReadBuffer(4096);
                 Task driver = new TaskFactory().StartNew(() => {
                     // Try to randomize the order in which things run to look for race conditions.
-                    Random r1 = new Random();
+                    Random r1 = new();
                     if (r1.Next(2) == 0) Thread.Sleep(10);
 
                     buffer.Dispose();
                 });
 
-                Random r2 = new Random();
+                Random r2 = new();
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
 
                 bool wait;
@@ -206,15 +206,15 @@
                 Assert.That(buffer.IsDeviceDead, Is.True);
                 await driver;
             } finally {
-                if (buffer != null) buffer.Dispose();
+                if (buffer is not null) buffer.Dispose();
             }
         }
 
         [Test]
         public async Task WaitForReadAsyncCancellationToken()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Task user = new TaskFactory().StartNew(() => {
                     Thread.Sleep(100);
                     cts.Cancel();
@@ -228,7 +228,7 @@
         [Test]
         public async Task WaitForReadAsyncCancellationTokenNone()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(await buffer.WaitForReadAsync(100, CancellationToken.None), Is.False);
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
             }
@@ -240,8 +240,8 @@
         [TestCase(true, 100, false, TestName = "WaitForReadAsyncCancellationTokenZeroTimeoutWithDataCancelled")]
         public async Task WaitForReadAsyncCancellationTokenZeroTimeout(bool cancelled, int produce, bool result)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 if (cancelled) cts.Cancel();
                 if (produce > 0) buffer.Produce(produce);
                 Assert.That(await buffer.WaitForReadAsync(0, cts.Token), Is.EqualTo(result));
@@ -253,7 +253,7 @@
         [TestCase(100, true, TestName = "WaitForReadAsyncCancellationTokenNoneZeroTimeoutWithData")]
         public async Task WaitForReadAsyncCancellationTokenNoneZeroTimeout(int produce, bool result)
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 if (produce > 0) buffer.Produce(produce);
                 Assert.That(await buffer.WaitForReadAsync(0, CancellationToken.None), Is.EqualTo(result));
                 Assert.That(buffer.BytesToRead, Is.EqualTo(produce));
@@ -264,11 +264,11 @@
         [Repeat(200)]
         public async Task WaitForReadAsyncCount()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Task producer = new TaskFactory().StartNew(() => {
                     for (int i = 0; i < 10; i++) {
                         // Try to randomize the order in which things run to look for race conditions.
-                        Random r1 = new Random();
+                        Random r1 = new();
                         if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                         lock (buffer.Lock) {
@@ -278,7 +278,7 @@
                 });
 
                 // Try to randomize the order in which things run to look for race conditions.
-                Random r2 = new Random();
+                Random r2 = new();
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
 
                 Assert.That(await buffer.WaitForReadAsync(950, Timeout.Infinite), Is.True);
@@ -290,7 +290,7 @@
         [Test]
         public async Task WaitForReadAsyncCountTimeout()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(await buffer.WaitForReadAsync(100, 100), Is.False);
             }
         }
@@ -302,7 +302,7 @@
         [TestCase(100, 150, false, TestName = "WaitForReadAsyncCountZeroTimeoutWithInsufficientData")]
         public async Task WaitForReadAsyncCountZeroTimeout(int produce, int count, bool result)
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 if (produce > 0) buffer.Produce(produce);
                 Assert.That(await buffer.WaitForReadAsync(count, 0), Is.EqualTo(result));
                 Assert.That(buffer.BytesToRead, Is.EqualTo(produce));
@@ -313,11 +313,11 @@
         [Repeat(200)]
         public async Task WaitForReadAsyncCountDeviceDead()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Task driver = new TaskFactory().StartNew(() => {
                     for (int i = 0; i < 2; i++) {
                         // Try to randomize the order in which things run to look for race conditions.
-                        Random r1 = new Random();
+                        Random r1 = new();
                         if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                         lock (buffer.Lock) {
@@ -329,7 +329,7 @@
                 });
 
                 // Try to randomize the order in which things run to look for race conditions.
-                Random r2 = new Random();
+                Random r2 = new();
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
 
                 Assert.That(await buffer.WaitForReadAsync(950, Timeout.Infinite), Is.False);
@@ -348,7 +348,7 @@
                 Task driver = new TaskFactory().StartNew(() => {
                     for (int i = 0; i < 2; i++) {
                         // Try to randomize the order in which things run to look for race conditions.
-                        Random r1 = new Random();
+                        Random r1 = new();
                         if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                         lock (buffer.Lock) {
@@ -359,7 +359,7 @@
                     buffer.Dispose();
                 });
 
-                Random r2 = new Random();
+                Random r2 = new();
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
 
                 bool wait;
@@ -377,15 +377,15 @@
                 await driver;
             } finally {
                 // A double dispose shouldn't cause a problem.
-                if (buffer != null) buffer.Dispose();
+                if (buffer is not null) buffer.Dispose();
             }
         }
 
         [Test]
         public async Task WaitForReadAsyncCountCancellationToken()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Task user = new TaskFactory().StartNew(() => {
                     Thread.Sleep(100);
                     cts.Cancel();
@@ -399,13 +399,13 @@
         [Test]
         public async Task WaitForReadAsyncCountWithDataCancellationToken()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Task t = new TaskFactory().StartNew(() => {
                     Thread.Sleep(100);
                     for (int i = 0; i < 2; i++) {
                         // Try to randomize the order in which things run to look for race conditions.
-                        Random r1 = new Random();
+                        Random r1 = new();
                         if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                         lock (buffer.Lock) {
@@ -423,7 +423,7 @@
         [Test]
         public async Task WaitForReadAsyncCountCancellationTokenNone()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(await buffer.WaitForReadAsync(1000, 100, CancellationToken.None), Is.False);
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
             }
@@ -432,12 +432,12 @@
         [Test]
         public async Task WaitForReadAsyncCountWithDataCancellationTokenNone()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Task t = new TaskFactory().StartNew(() => {
                     Thread.Sleep(50);
                     for (int i = 0; i < 2; i++) {
                         // Try to randomize the order in which things run to look for race conditions.
-                        Random r1 = new Random();
+                        Random r1 = new();
                         if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                         lock (buffer.Lock) {
@@ -464,8 +464,8 @@
         [TestCase(true, 100, 150, false, TestName = "WaitForReadAsyncCountCancellationTokenZeroTimeoutWithInsufficientDataCancelled")]
         public async Task WaitForReadAsyncCountCancellationTokenZeroTimeout(bool cancelled, int produce, int count, bool result)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 if (cancelled) cts.Cancel();
                 if (produce > 0) buffer.Produce(produce);
                 Assert.That(await buffer.WaitForReadAsync(count, 0, cts.Token), Is.EqualTo(result));
@@ -480,7 +480,7 @@
         [TestCase(100, 150, false, TestName = "WaitForReadAsyncCountCancellationTokenNoneZeroTimeoutWithInsufficientData")]
         public async Task WaitForReadAsyncCountCancellationNoneTokenZeroTimeout(int produce, int count, bool result)
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 if (produce > 0) buffer.Produce(produce);
                 Assert.That(await buffer.WaitForReadAsync(count, 0, CancellationToken.None), Is.EqualTo(result));
                 Assert.That(buffer.BytesToRead, Is.EqualTo(produce));
@@ -490,7 +490,7 @@
         [Test]
         public async Task WaitForReadAsyncCountAtCapacity()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(await buffer.WaitForReadAsync(4097, Timeout.Infinite), Is.False);
             }
         }
@@ -499,8 +499,8 @@
         [TestCase(true, TestName = "WaitForReadAsyncCountAtCapacityCancellationTokenCancelled")]
         public async Task WaitForReadAsyncCountAtCapacityCancellationToken(bool cancelled)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 if (cancelled) cts.Cancel();
                 Assert.That(await buffer.WaitForReadAsync(4097, Timeout.Infinite, cts.Token), Is.False);
             }
@@ -509,7 +509,7 @@
         [Test]
         public async Task WaitForReadAsyncCountAtCapacityCancellationTokenNone()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(await buffer.WaitForReadAsync(4097, Timeout.Infinite, CancellationToken.None), Is.False);
             }
         }
@@ -517,7 +517,7 @@
         [Test]
         public void WaitForReadAsyncNegativeTimeout()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(async () => { await buffer.WaitForReadAsync(-2); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
@@ -527,8 +527,8 @@
         [Test]
         public void WaitForReadAsyncNegativeTimeoutCancellationToken()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(async () => { await buffer.WaitForReadAsync(-2, cts.Token); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
@@ -538,7 +538,7 @@
         [Test]
         public void WaitForReadAsyncCountNegativeTimeout()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(async () => { await buffer.WaitForReadAsync(500, -2); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
@@ -548,8 +548,8 @@
         [Test]
         public void WaitForReadAsyncCountNegativeTimeoutCancellationToken()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(async () => { await buffer.WaitForReadAsync(500, -2, cts.Token); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
@@ -559,7 +559,7 @@
         [Test]
         public void WaitForReadAsyncCountNegativeTimeoutCancellationTokenNone()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(async () => { await buffer.WaitForReadAsync(500, -2, CancellationToken.None); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
@@ -569,7 +569,7 @@
         [Test]
         public void WaitForReadAsyncNegativeCount()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(async () => { await buffer.WaitForReadAsync(-100, Timeout.Infinite); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
@@ -579,8 +579,8 @@
         [Test]
         public void WaitForReadAsyncNegativeCountCancellationToken()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(async () => { await buffer.WaitForReadAsync(-100, Timeout.Infinite, cts.Token); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
@@ -590,7 +590,7 @@
         [Test]
         public void WaitForReadAsyncNegativeCountCancellationTokenNone()
         {
-            using (MemoryReadBuffer buffer = new MemoryReadBuffer(4096)) {
+            using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(async () => { await buffer.WaitForReadAsync(-100, Timeout.Infinite, CancellationToken.None); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));

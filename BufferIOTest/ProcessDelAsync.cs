@@ -30,14 +30,14 @@
 
         public IAsyncResult BeginOp(AsyncCallback callback, object state)
         {
-            OpAsyncResult ar = new OpAsyncResult(callback, state, this, nameof(BeginOp));
+            OpAsyncResult ar = new(callback, state, this, nameof(BeginOp));
             ar.Process(this);
             return ar;
         }
 
         private void DoOp(Action<Exception> onComplete)
         {
-            if (m_BackgroundThread != null)
+            if (m_BackgroundThread is not null)
                 throw new InvalidOperationException("Test still running");
 
             m_BackgroundThread = new Thread(() => {

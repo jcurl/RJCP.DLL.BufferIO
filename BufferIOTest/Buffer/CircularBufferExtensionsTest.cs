@@ -20,7 +20,7 @@
         [Test]
         public void CircularBufferExt_GetStringSimple()
         {
-            CircularBuffer<char> cb = new CircularBuffer<char>(15);
+            CircularBuffer<char> cb = new(15);
             for (int i = 0; i < cb.Capacity; i++) {
                 cb.Array[i] = (char)('A' + i);
             }
@@ -41,7 +41,7 @@
         [Test]
         public void CircularBufferExt_GetStringLength()
         {
-            CircularBuffer<char> cb = new CircularBuffer<char>(15);
+            CircularBuffer<char> cb = new(15);
             for (int i = 0; i < cb.Capacity; i++) {
                 cb.Array[i] = (char)('A' + i);
             }
@@ -77,7 +77,7 @@
         [Test]
         public void CircularBufferExt_GetStringOffsetLength()
         {
-            CircularBuffer<char> cb = new CircularBuffer<char>(15);
+            CircularBuffer<char> cb = new(15);
             for (int i = 0; i < cb.Capacity; i++) {
                 cb.Array[i] = (char)('A' + i);
             }
@@ -119,7 +119,7 @@
         [Test]
         public void CircularBuffer_AppendArray()
         {
-            CircularBuffer<char> cb = new CircularBuffer<char>(20);
+            CircularBuffer<char> cb = new(20);
             cb.Produce(10);
             cb.Consume(9);
 
@@ -144,8 +144,8 @@
         [Test]
         public void CircularBuffer_AppendBuffer()
         {
-            CircularBuffer<char> cb1 = new CircularBuffer<char>(20);
-            CircularBuffer<char> cb2 = new CircularBuffer<char>(20);
+            CircularBuffer<char> cb1 = new(20);
+            CircularBuffer<char> cb2 = new(20);
 
             // Read is one chunk, write is one chunk
             cb2.Produce(3);
@@ -219,7 +219,7 @@
         [Test]
         public void CircularBuffer_AppendWithOffsetBoundaries()
         {
-            CircularBuffer<char> cb = new CircularBuffer<char>(20);
+            CircularBuffer<char> cb = new(20);
 
             cb.Append("abcdefghijklmno".ToCharArray());
             cb.Consume(14);
@@ -236,7 +236,7 @@
         {
             // On Mono when using ISO-8859-15, a source length of zero causes problems.
             Decoder d = Encoding.GetEncoding("ISO-8859-15").GetDecoder();
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(100);
+            CircularBuffer<byte> cb = new(100);
             char[] outc = new char[100];
 
             d.Convert(cb, outc, 0, outc.Length, true, out int bu, out int cu, out bool completed);
@@ -250,8 +250,8 @@
         {
             // On Mono when using ISO-8859-15, a source length of zero causes problems.
             Decoder d = Encoding.GetEncoding("ISO-8859-15").GetDecoder();
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(100);
-            CircularBuffer<char> cc = new CircularBuffer<char>(100);
+            CircularBuffer<byte> cb = new(100);
+            CircularBuffer<char> cc = new(100);
 
             d.Convert(cb, cc, cc.Length, true, out int bu, out int cu, out bool completed);
             Assert.That(bu, Is.EqualTo(0));
@@ -264,8 +264,8 @@
         {
             // On Mono when using ISO-8859-15, a source length of zero causes problems.
             Decoder d = Encoding.GetEncoding("ISO-8859-15").GetDecoder();
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(100);
-            CircularBuffer<char> cc = new CircularBuffer<char>(100);
+            CircularBuffer<byte> cb = new(100);
+            CircularBuffer<char> cc = new(100);
 
             d.Convert(cb, cc, true, out int bu, out int cu, out bool completed);
             Assert.That(bu, Is.EqualTo(0));
@@ -279,7 +279,7 @@
             // On Mono when using ISO-8859-15, a source length of zero causes problems.
             Decoder d = Encoding.GetEncoding("ISO-8859-15").GetDecoder();
             byte[] sb = new byte[100];
-            CircularBuffer<char> cc = new CircularBuffer<char>(100);
+            CircularBuffer<char> cc = new(100);
 
             d.Convert(sb, 0, 0, cc, true, out int bu, out int cu, out bool completed);
             Assert.That(bu, Is.EqualTo(0));
@@ -293,7 +293,7 @@
             // On Mono when using ISO-8859-15, a source length of zero causes problems.
             Encoder e = Encoding.GetEncoding("ISO-8859-15").GetEncoder();
             char[] sc = new char[100];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(100);
+            CircularBuffer<byte> cb = new(100);
 
             e.Convert(sc, 0, 0, cb, true, out int cu, out int bu, out bool completed);
             Assert.That(cu, Is.EqualTo(0));
@@ -318,7 +318,7 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[28];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             // Based on the test "Decoder_Boundaries1"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -347,7 +347,7 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[28];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             // Based on the test "Decoder_Boundaries2"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -376,7 +376,7 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[20];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             // Based on the test "Decoder_InsufficientCharSpace"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -398,7 +398,7 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[20];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             // Based on the test "Decoder_InsufficientCharSpaceFlush"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -420,7 +420,7 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[13];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             // Based on the test "Decoder_InsufficientCharSpaceMbcs1"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -442,7 +442,7 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 13);
+            CircularBuffer<byte> cb = new(m, 16, 13);
 
             // Based on the test "Decoder_IncompleteBuff"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -472,7 +472,7 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 14);
+            CircularBuffer<byte> cb = new(m, 16, 14);
 
             // Based on the test "Decoder_IncompleteBuffFlush"
             Encoding enc = Encoding.GetEncoding("UTF-8", new EncoderReplacementFallback("."), new DecoderReplacementFallback("."));
@@ -495,7 +495,7 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 14);
+            CircularBuffer<byte> cb = new(m, 16, 14);
 
             // Based on the test "Decoder_IncompleteBuffFlush2"
             Encoding enc = Encoding.GetEncoding("UTF-8", new EncoderReplacementFallback("."), new DecoderReplacementFallback("."));
@@ -518,7 +518,7 @@
                 0x57, 0x58, 0x59, 0x5A, 0xF3, 0xA0
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 16);
+            CircularBuffer<byte> cb = new(m, 16, 16);
 
             // Based on the test "Decoder_Utf16Chars1"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -540,7 +540,7 @@
                 0x57, 0x58, 0x59, 0x5A, 0xF3, 0xA0
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 16);
+            CircularBuffer<byte> cb = new(m, 16, 16);
 
             // Based on the test "Decoder_Utf16Chars2"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -577,7 +577,7 @@
             bool complete;
             bool exception = false;
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 28, 4);
+            CircularBuffer<byte> cb = new(m, 28, 4);
             try {
                 // An exception might be raised to say that the data can't be converted to fit in the output memory
                 // buffer. But then nothing should be consumed. Instead, it may be bytes are consumed and no exception,
@@ -587,7 +587,7 @@
                 Assert.That(cb.Length, Is.EqualTo(4 - bu));  // And that the buffer is reduced by the correct amount.
                 Assert.That(complete, Is.False);
             } catch (ArgumentException e) {
-                if (e.ParamName == null || !e.ParamName.Equals("chars")) throw;
+                if (e.ParamName is null || !e.ParamName.Equals("chars")) throw;
                 exception = true;
                 cu = -1;
             }
@@ -612,7 +612,7 @@
                 Assert.That(cb.Length, Is.EqualTo(4 - bu));  // And that the buffer is reduced by the correct amount.
                 Assert.That(complete, Is.False);
             } catch (ArgumentException e) {
-                if (e.ParamName == null || !e.ParamName.Equals("chars")) throw;
+                if (e.ParamName is null || !e.ParamName.Equals("chars")) throw;
                 exception = true;
                 cu = -1;
             }
@@ -640,8 +640,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[28];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
+            CircularBuffer<char> cc = new(c, 5, 0);
 
             // Based on the test "Decoder_Boundaries"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -662,8 +662,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[28];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
+            CircularBuffer<char> cc = new(c, 5, 0);
 
             // Based on the test "Decoder_Boundaries"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -684,8 +684,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[20];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
+            CircularBuffer<char> cc = new(c, 5, 0);
 
             // Based on the test "Decoder_InsufficientCharSpace"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -707,8 +707,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[20];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
+            CircularBuffer<char> cc = new(c, 5, 0);
 
             // Based on the test "Decoder_InsufficientCharSpaceFlush"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -730,8 +730,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[13];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
+            CircularBuffer<char> cc = new(c, 5, 0);
 
             // Based on the test "Decoder_InsufficientCharSpaceMbcs1"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -752,8 +752,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 13);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 16, 13);
+            CircularBuffer<char> cc = new(c, 5, 0);
 
             // Based on the test "Decoder_IncompleteBuff"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -784,8 +784,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 14);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 16, 14);
+            CircularBuffer<char> cc = new(c, 5, 0);
 
             // Based on the test "Decoder_IncompleteBuffFlush"
             Encoding enc = Encoding.GetEncoding("UTF-8", new EncoderReplacementFallback("."), new DecoderReplacementFallback("."));
@@ -808,8 +808,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 14);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 16, 14);
+            CircularBuffer<char> cc = new(c, 5, 0);
 
             // Based on the test "Decoder_IncompleteBuffFlush2"
             Encoding enc = Encoding.GetEncoding("UTF-8", new EncoderReplacementFallback("."), new DecoderReplacementFallback("."));
@@ -832,8 +832,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xF3, 0xA0
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 16);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 16, 16);
+            CircularBuffer<char> cc = new(c, 5, 0);
 
             // Based on the test "Decoder_Utf16Chars1"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -855,8 +855,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xF3, 0xA0
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 16);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 17, 0);
+            CircularBuffer<byte> cb = new(m, 16, 16);
+            CircularBuffer<char> cc = new(c, 17, 0);
 
             // Based on the test "Decoder_Utf16Chars1"
             // - We force the 2 chars to wrap
@@ -879,8 +879,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xF3, 0xA0
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, 16);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 16, 16);
+            CircularBuffer<char> cc = new(c, 5, 0);
 
             // Based on the test "Decoder_Utf16Chars2"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -918,8 +918,8 @@
             bool exception = false;
             Decoder d = Encoding.UTF8.GetDecoder();
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 28, 4);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 5, 0);
+            CircularBuffer<byte> cb = new(m, 28, 4);
+            CircularBuffer<char> cc = new(c, 5, 0);
             try {
                 // An exception might be raised to say that the data can't be converted to fit in the output memory
                 // buffer. But then nothing should be consumed. Instead, it may be bytes are consumed and no exception,
@@ -929,7 +929,7 @@
                 Assert.That(cb.Length, Is.EqualTo(4 - bu));  // And that the buffer is reduced by the correct amount.
                 Assert.That(complete, Is.False);
             } catch (ArgumentException e) {
-                if (e.ParamName == null || !e.ParamName.Equals("chars")) throw;
+                if (e.ParamName is null || !e.ParamName.Equals("chars")) throw;
                 exception = true;
                 cu = -1;
             }
@@ -953,7 +953,7 @@
                 Assert.That(cb.Length, Is.EqualTo(4 - bu));  // And that the buffer is reduced by the correct amount.
                 Assert.That(complete, Is.False);
             } catch (ArgumentException e) {
-                if (e.ParamName == null || !e.ParamName.Equals("chars")) throw;
+                if (e.ParamName is null || !e.ParamName.Equals("chars")) throw;
                 exception = true;
                 cu = -1;
             }
@@ -980,8 +980,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(b, 16, b.Length);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 28, 0);
+            CircularBuffer<byte> cb = new(b, 16, b.Length);
+            CircularBuffer<char> cc = new(c, 28, 0);
 
             Decoder d = Encoding.UTF8.GetDecoder();
             d.Convert(cb, cc, cc.Capacity, false, out int bu, out int cu, out bool complete);
@@ -1000,8 +1000,8 @@
                 0x42, 0x43, 0x44, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(b, 0, b.Length);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 29, 0);
+            CircularBuffer<byte> cb = new(b, 0, b.Length);
+            CircularBuffer<char> cc = new(c, 29, 0);
 
             Decoder d = Encoding.UTF8.GetDecoder();
             d.Convert(cb, cc, cc.Capacity, false, out int bu, out int cu, out _);
@@ -1019,8 +1019,8 @@
                 0x42, 0x43, 0x44, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55
             };
             char[] c = new char[29];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(b, 4, b.Length);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 0, 0);
+            CircularBuffer<byte> cb = new(b, 4, b.Length);
+            CircularBuffer<char> cc = new(c, 0, 0);
 
             Decoder d = Encoding.UTF8.GetDecoder();
             d.Convert(cb, cc, cc.Capacity, false, out int bu, out int cu, out bool complete);
@@ -1083,8 +1083,8 @@
                 0x57, 0x58, 0x59, 0x5A, 0xE2, 0x82
             };
             char[] c = new char[30];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(b, 16, b.Length);
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 28, 0);
+            CircularBuffer<byte> cb = new(b, 16, b.Length);
+            CircularBuffer<char> cc = new(c, 28, 0);
 
             Decoder d = Encoding.UTF8.GetDecoder();
             d.Convert(cb, cc, false, out int bu, out int cu, out bool complete);
@@ -1104,7 +1104,7 @@
                 0xAC, 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46,
                 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
-            CircularBuffer<char> cc = new CircularBuffer<char>(28);
+            CircularBuffer<char> cc = new(28);
 
             // Based on the test "Decoder_Boundaries"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -1126,7 +1126,7 @@
                 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[28];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 20, 0);
+            CircularBuffer<char> cc = new(c, 20, 0);
 
             // Based on the test "Decoder_Boundaries"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -1148,7 +1148,7 @@
                 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[28];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 20, 0);
+            CircularBuffer<char> cc = new(c, 20, 0);
 
             // Based on the test "Decoder_BoundariesFlush"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -1170,7 +1170,7 @@
                 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[20];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 15, 0);
+            CircularBuffer<char> cc = new(c, 15, 0);
 
             // Based on the test "Decoder_InsufficientCharSpace"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -1192,7 +1192,7 @@
                 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[20];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 15, 0);
+            CircularBuffer<char> cc = new(c, 15, 0);
 
             // Based on the test "Decoder_InsufficientCharSpaceFlush"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -1214,7 +1214,7 @@
                 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[13];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 4, 0);
+            CircularBuffer<char> cc = new(c, 4, 0);
 
             // Based on the test "Decoder_InsufficientCharSpaceMbcs1"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -1236,7 +1236,7 @@
                 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[30];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 20, 0);
+            CircularBuffer<char> cc = new(c, 20, 0);
 
             // Based on the test "Decoder_IncompleteBuff"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -1265,7 +1265,7 @@
                 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[30];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 20, 0);
+            CircularBuffer<char> cc = new(c, 20, 0);
 
             // Based on the test "Decoder_IncompleteBuffFlush"
             Encoding enc = Encoding.GetEncoding("UTF-8", new EncoderReplacementFallback("."), new DecoderReplacementFallback("."));
@@ -1288,7 +1288,7 @@
                 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[12];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 11, 0);
+            CircularBuffer<char> cc = new(c, 11, 0);
 
             // Based on the test "Decoder_IncompleteBuffFlush2"
             Encoding enc = Encoding.GetEncoding("UTF-8", new EncoderReplacementFallback("."), new DecoderReplacementFallback("."));
@@ -1311,7 +1311,7 @@
                 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[14];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 11, 0);
+            CircularBuffer<char> cc = new(c, 11, 0);
 
             // Based on the test "Decoder_Utf16Chars1"
             Decoder d = Encoding.UTF8.GetDecoder();
@@ -1333,7 +1333,7 @@
                 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[13];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 11, 0);
+            CircularBuffer<char> cc = new(c, 11, 0);
 
             // Based on the test "Decoder_Utf16Chars2"
             Encoding enc = Encoding.GetEncoding("UTF-8", new EncoderReplacementFallback("."), new DecoderReplacementFallback("."));
@@ -1356,7 +1356,7 @@
                 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E
             };
             char[] c = new char[1];
-            CircularBuffer<char> cc = new CircularBuffer<char>(c, 0, 0);
+            CircularBuffer<char> cc = new(c, 0, 0);
 
             // Based on the test "Decoder_Utf16Chars3"
 
@@ -1384,7 +1384,7 @@
         public void CircularBufferExt_EncoderConvert()
         {
             char[] c = { 'A', 'B', '€', 'C' };
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(20);
+            CircularBuffer<byte> cb = new(20);
 
             Encoder e = Encoding.UTF8.GetEncoder();
             e.Convert(c, 0, 3, cb, false, out int cu, out int bu, out bool complete);
@@ -1408,7 +1408,7 @@
         public void CircularBufferExt_EncoderConvert_Full1()
         {
             char[] c = { 'A', 'B', '€', 'C' };
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(20);
+            CircularBuffer<byte> cb = new(20);
 
             cb.Produce(17);
             cb.Consume(3);
@@ -1430,7 +1430,7 @@
         public void CircularBufferExt_EncoderConvert_Full2()
         {
             char[] c = { 'A', 'B', '€', 'C' };
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(20);
+            CircularBuffer<byte> cb = new(20);
 
             cb.Produce(14);
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1452,7 +1452,7 @@
         {
             Encoder e = Encoding.UTF8.GetEncoder();
             char[] c = { 'A', 'B', '€', 'C' };
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(20);
+            CircularBuffer<byte> cb = new(20);
 
             for (int i = 15; i < 20; i++) {
                 Console.WriteLine("With {0} bytes free", 20 - i);
@@ -1471,7 +1471,7 @@
         {
             char[] c = "This is a test €100.99".ToCharArray();
             byte[] m = new byte[24];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 0, 0);
+            CircularBuffer<byte> cb = new(m, 0, 0);
 
             // Based on the test "Encoder_Boundaries"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1486,7 +1486,7 @@
         {
             char[] c = "This is a test €100.99".ToCharArray();
             byte[] m = new byte[24];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 12, 0);
+            CircularBuffer<byte> cb = new(m, 12, 0);
 
             // Based on the test "Encoder_Boundaries", but ensures the MBCS character is properly wrapped
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1501,7 +1501,7 @@
         {
             char[] c = "This is a test €100.99".ToCharArray();
             byte[] m = new byte[24];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 0, 0);
+            CircularBuffer<byte> cb = new(m, 0, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1516,7 +1516,7 @@
         {
             char[] c = "This is a test €100.99".ToCharArray();
             byte[] m = new byte[24];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 12, 0);
+            CircularBuffer<byte> cb = new(m, 12, 0);
 
             // Based on the test "Encoder_BoundariesFlush", but ensures the MBCS character is properly wrapped
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1531,7 +1531,7 @@
         {
             char[] c = "This is a test €100.99".ToCharArray();
             byte[] m = new byte[20];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 10, 0);
+            CircularBuffer<byte> cb = new(m, 10, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1546,7 +1546,7 @@
         {
             char[] c = "This is a test €100.99".ToCharArray();
             byte[] m = new byte[20];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 10, 0);
+            CircularBuffer<byte> cb = new(m, 10, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1561,7 +1561,7 @@
         {
             char[] c = "This is a test €100.99".ToCharArray();
             byte[] m = new byte[16];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 10, 0);
+            CircularBuffer<byte> cb = new(m, 10, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1576,7 +1576,7 @@
         {
             char[] c = "This is a test €100.99".ToCharArray();
             byte[] m = new byte[16];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 10, 0);
+            CircularBuffer<byte> cb = new(m, 10, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1591,7 +1591,7 @@
         {
             char[] c = "OPQRSTUVWXYZ\uDB40\uDC84".ToCharArray();
             byte[] m = new byte[16];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 0, 0);
+            CircularBuffer<byte> cb = new(m, 0, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1606,7 +1606,7 @@
         {
             char[] c = "OPQRSTUVWXYZ\uDB40\uDC84".ToCharArray();
             byte[] m = new byte[16];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 3, 0);
+            CircularBuffer<byte> cb = new(m, 3, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1621,7 +1621,7 @@
         {
             char[] c = "OPQRSTUVWXYZ\uDB40\uDC84".ToCharArray();
             byte[] m = new byte[15];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 0, 0);
+            CircularBuffer<byte> cb = new(m, 0, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1636,7 +1636,7 @@
         {
             char[] c = "OPQRSTUVWXYZ\uDB40\uDC84".ToCharArray();
             byte[] m = new byte[15];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 2, 0);
+            CircularBuffer<byte> cb = new(m, 2, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1651,7 +1651,7 @@
         {
             char[] c = "OPQRSTUVWXYZ\uDB40\uDC84".ToCharArray();
             byte[] m = new byte[4];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 0, 0);
+            CircularBuffer<byte> cb = new(m, 0, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1666,7 +1666,7 @@
         {
             char[] c = "OPQRSTUVWXYZ\uDB40\uDC84".ToCharArray();
             byte[] m = new byte[4];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 2, 0);
+            CircularBuffer<byte> cb = new(m, 2, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1681,7 +1681,7 @@
         {
             char[] c = "OPQRSTUVWXYZ\uDB40\uDC84".ToCharArray();
             byte[] m = new byte[3];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 0, 0);
+            CircularBuffer<byte> cb = new(m, 0, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();
@@ -1695,7 +1695,7 @@
         {
             char[] c = "OPQRSTUVWXYZ\uDB40\uDC84".ToCharArray();
             byte[] m = new byte[3];
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 1, 0);
+            CircularBuffer<byte> cb = new(m, 1, 0);
 
             // Based on the test "Encoder_BoundariesFlush"
             Encoder e = Encoding.UTF8.GetEncoder();

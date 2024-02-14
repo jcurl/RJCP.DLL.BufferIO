@@ -14,7 +14,7 @@
 
             public override void Process()
             {
-                if (m_BackgroundThread != null)
+                if (m_BackgroundThread is not null)
                     throw new InvalidOperationException("Test still running");
 
                 m_BackgroundThread = new Thread(() => {
@@ -35,7 +35,7 @@
         public IAsyncResult BeginTest(AsyncCallback callback, object state)
         {
 
-            AsynchronousTestAsyncResult result = new AsynchronousTestAsyncResult(callback, state, this, nameof(BeginTest));
+            AsynchronousTestAsyncResult result = new(callback, state, this, nameof(BeginTest));
             result.Process();
             return result;
         }

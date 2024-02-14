@@ -16,7 +16,7 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb = new(m);
 
             byte[] result = new byte[8];
             if (copy) {
@@ -39,7 +39,7 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb = new(m);
 
             byte[] result = new byte[m.Length];
             if (copy) {
@@ -62,7 +62,7 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 8, m.Length);
+            CircularBuffer<byte> cb = new(m, 8, m.Length);
 
             byte[] result = new byte[8];
             if (copy) {
@@ -85,7 +85,7 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             byte[] result = new byte[12];
             if (copy) {
@@ -108,7 +108,7 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             byte[] result = new byte[m.Length];
             if (copy) {
@@ -135,7 +135,7 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             byte[] result = new byte[m.Length + 1];
             if (copy) {
@@ -163,7 +163,7 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 0, m.Length);
+            CircularBuffer<byte> cb = new(m, 0, m.Length);
 
             byte[] result = new byte[m.Length + 1];
             if (copy) {
@@ -191,7 +191,7 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 8, 8);
+            CircularBuffer<byte> cb = new(m, 8, 8);
 
             byte[] result = new byte[8];
             if (copy) {
@@ -216,7 +216,7 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 20, 8);
+            CircularBuffer<byte> cb = new(m, 20, 8);
 
             byte[] result = new byte[8];
             if (copy) {
@@ -234,7 +234,7 @@
         [Test]
         public void AppendFull()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(24);
+            CircularBuffer<byte> cb = new(24);
 
             byte[] m = {
                 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
@@ -252,7 +252,7 @@
         [Test]
         public void AppendFullWrap()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(new byte[24], 12, 0);
+            CircularBuffer<byte> cb = new(new byte[24], 12, 0);
 
             byte[] m = {
                 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
@@ -274,7 +274,7 @@
         [Test]
         public void Append()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(new byte[24], 12, 0);
+            CircularBuffer<byte> cb = new(new byte[24], 12, 0);
 
             byte[] m = {
                 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
@@ -294,7 +294,7 @@
         [Test]
         public void AppendWrap()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(new byte[24], 12, 0);
+            CircularBuffer<byte> cb = new(new byte[24], 12, 0);
 
             byte[] m = {
                 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
@@ -320,7 +320,7 @@
                 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70,
                 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78,
             };
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(s, 12, 8);
+            CircularBuffer<byte> cb = new(s, 12, 8);
 
             byte[] m = {
                 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
@@ -350,10 +350,10 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb = new(m);
 
             byte[] result = new byte[8];
-            Span<byte> span = new Span<byte>(result);
+            Span<byte> span = new(result);
             if (copy) {
                 Assert.That(cb.CopyTo(span), Is.EqualTo(result.Length));
                 Assert.That(cb.Length, Is.EqualTo(m.Length));
@@ -374,10 +374,10 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m);
+            CircularBuffer<byte> cb = new(m);
 
             byte[] result = new byte[m.Length];
-            Span<byte> span = new Span<byte>(result);
+            Span<byte> span = new(result);
             if (copy) {
                 Assert.That(cb.CopyTo(span), Is.EqualTo(result.Length));
                 Assert.That(cb.Length, Is.EqualTo(m.Length));
@@ -398,10 +398,10 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 8, m.Length);
+            CircularBuffer<byte> cb = new(m, 8, m.Length);
 
             byte[] result = new byte[8];
-            Span<byte> span = new Span<byte>(result);
+            Span<byte> span = new(result);
             if (copy) {
                 Assert.That(cb.CopyTo(span), Is.EqualTo(result.Length));
                 Assert.That(cb.Length, Is.EqualTo(m.Length));
@@ -422,10 +422,10 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             byte[] result = new byte[12];
-            Span<byte> span = new Span<byte>(result);
+            Span<byte> span = new(result);
             if (copy) {
                 Assert.That(cb.CopyTo(span), Is.EqualTo(result.Length));
                 Assert.That(cb.Length, Is.EqualTo(m.Length));
@@ -446,10 +446,10 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             byte[] result = new byte[m.Length];
-            Span<byte> span = new Span<byte>(result);
+            Span<byte> span = new(result);
             if (copy) {
                 Assert.That(cb.CopyTo(span), Is.EqualTo(result.Length));
                 Assert.That(cb.Length, Is.EqualTo(m.Length));
@@ -474,10 +474,10 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 16, m.Length);
+            CircularBuffer<byte> cb = new(m, 16, m.Length);
 
             byte[] result = new byte[m.Length + 1];
-            Span<byte> span = new Span<byte>(result);
+            Span<byte> span = new(result);
             if (copy) {
                 Assert.That(cb.CopyTo(span), Is.EqualTo(m.Length));
                 Assert.That(cb.Length, Is.EqualTo(m.Length));
@@ -503,10 +503,10 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 0, m.Length);
+            CircularBuffer<byte> cb = new(m, 0, m.Length);
 
             byte[] result = new byte[m.Length + 1];
-            Span<byte> span = new Span<byte>(result);
+            Span<byte> span = new(result);
             if (copy) {
                 Assert.That(cb.CopyTo(span), Is.EqualTo(m.Length));
                 Assert.That(cb.Length, Is.EqualTo(m.Length));
@@ -532,10 +532,10 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 8, 8);
+            CircularBuffer<byte> cb = new(m, 8, 8);
 
             byte[] result = new byte[8];
-            Span<byte> span = new Span<byte>(result);
+            Span<byte> span = new(result);
             if (copy) {
                 Assert.That(cb.CopyTo(span), Is.EqualTo(result.Length));
                 Assert.That(cb.Length, Is.EqualTo(8));
@@ -558,10 +558,10 @@
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
 
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(m, 20, 8);
+            CircularBuffer<byte> cb = new(m, 20, 8);
 
             byte[] result = new byte[8];
-            Span<byte> span = new Span<byte>(result);
+            Span<byte> span = new(result);
             if (copy) {
                 Assert.That(cb.CopyTo(span), Is.EqualTo(result.Length));
                 Assert.That(cb.Length, Is.EqualTo(8));
@@ -577,14 +577,14 @@
         [Test]
         public void AppendSpanFull()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(24);
+            CircularBuffer<byte> cb = new(24);
 
             byte[] m = {
                 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
                 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50,
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
-            Span<byte> span = new Span<byte>(m);
+            Span<byte> span = new(m);
             Assert.That(cb.Append(span), Is.EqualTo(m.Length));
             Assert.That(cb.Length, Is.EqualTo(m.Length));
 
@@ -596,14 +596,14 @@
         [Test]
         public void AppendSpanFullWrap()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(new byte[24], 12, 0);
+            CircularBuffer<byte> cb = new(new byte[24], 12, 0);
 
             byte[] m = {
                 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
                 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50,
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
-            Span<byte> span = new Span<byte>(m);
+            Span<byte> span = new(m);
             Assert.That(cb.Append(span), Is.EqualTo(m.Length));
             Assert.That(cb.Length, Is.EqualTo(m.Length));
 
@@ -619,14 +619,14 @@
         [Test]
         public void AppendSpan()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(new byte[24], 12, 0);
+            CircularBuffer<byte> cb = new(new byte[24], 12, 0);
 
             byte[] m = {
                 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
                 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50,
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
-            Span<byte> span = new Span<byte>(m);
+            Span<byte> span = new(m);
             Assert.That(cb.Append(span[0..8]), Is.EqualTo(8));
             Assert.That(cb.Length, Is.EqualTo(8));
 
@@ -640,14 +640,14 @@
         [Test]
         public void AppendSpanWrap()
         {
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(new byte[24], 12, 0);
+            CircularBuffer<byte> cb = new(new byte[24], 12, 0);
 
             byte[] m = {
                 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
                 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50,
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
-            Span<byte> span = new Span<byte>(m);
+            Span<byte> span = new(m);
             Assert.That(cb.Append(span[0..16]), Is.EqualTo(16));
             Assert.That(cb.Length, Is.EqualTo(16));
 
@@ -667,14 +667,14 @@
                 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70,
                 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78,
             };
-            CircularBuffer<byte> cb = new CircularBuffer<byte>(s, 12, 8);
+            CircularBuffer<byte> cb = new(s, 12, 8);
 
             byte[] m = {
                 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
                 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50,
                 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             };
-            Span<byte> span = new Span<byte>(m);
+            Span<byte> span = new(m);
             Assert.That(cb.Append(span), Is.EqualTo(16));
             Assert.That(cb.Length, Is.EqualTo(24));
 

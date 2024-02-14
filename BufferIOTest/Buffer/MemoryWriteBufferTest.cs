@@ -43,7 +43,7 @@
         [Test]
         public void CreateDefault()
         {
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Assert.That(buffer.Lock, Is.Not.Null);
                 Assert.That(buffer.BufferPtr, Is.EqualTo(IntPtr.Zero));      // Not pinned, so is zero
                 Assert.That(buffer.BytesFree, Is.EqualTo(4096));
@@ -58,7 +58,7 @@
         [Test]
         public void CreatePinned()
         {
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096, true)) {
+            using (MemoryWriteBuffer buffer = new(4096, true)) {
                 Assert.That(buffer.Lock, Is.Not.Null);
                 Assert.That(buffer.BufferPtr, Is.Not.EqualTo(IntPtr.Zero));  // Pinned, so is real
                 Assert.That(buffer.BytesFree, Is.EqualTo(4096));
@@ -75,8 +75,8 @@
         [TestCase(WriteOverload.TokenNone, TestName = "WaitForWriteCancellationTokenNone")]
         public void WaitForWrite(WriteOverload overload)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Assert.That(buffer.WaitForWrite(overload, 1, Timeout.Infinite, cts), Is.True);
             }
         }
@@ -87,15 +87,15 @@
         [Repeat(200)]
         public void WaitForWriteFull(WriteOverload overload)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[4096], 0, 4096);
                 Assert.That(buffer.BytesFree, Is.EqualTo(0));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
 
                 Task producer = new TaskFactory().StartNew(() => {
                     // Try to randomize the order in which things run to look for race conditions.
-                    Random r1 = new Random();
+                    Random r1 = new();
                     if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                     lock (buffer.Lock) {
@@ -104,7 +104,7 @@
                 });
 
                 // Try to randomize the order in which things run to look for race conditions.
-                Random r2 = new Random();
+                Random r2 = new();
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
                 Assert.That(buffer.WaitForWrite(overload, 1, Timeout.Infinite, cts), Is.True);
                 Assert.That(buffer.BytesFree, Is.GreaterThan(0));
@@ -116,8 +116,8 @@
         [Test]
         public void WaitForWriteFullCancel()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[4096], 0, 4096);
                 Assert.That(buffer.BytesFree, Is.EqualTo(0));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
@@ -138,8 +138,8 @@
         [Test]
         public void WaitForWriteFullCancelPrior()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[4096], 0, 4096);
                 Assert.That(buffer.BytesFree, Is.EqualTo(0));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
@@ -159,8 +159,8 @@
         [TestCase(100, true, WriteOverload.TokenNone, TestName = "WaitForWriteZeroTimeoutNotFullCancellationTokenNone")]
         public void WaitForWriteZeroTimeout(int free, bool result, WriteOverload overload)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 if (free < 4096) buffer.Write(new byte[4096], 0, 4096 - free);
                 Assert.That(buffer.WaitForWrite(overload, 1, 0, cts), Is.EqualTo(result));
                 Assert.That(buffer.BytesFree, Is.EqualTo(free));
@@ -171,7 +171,7 @@
         [Test]
         public void WaitForWriteToFull()
         {
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Assert.That(buffer.WaitForWrite(1, 0), Is.True);
                 Assert.That(buffer.WaitForWrite(1, 1), Is.True);
                 buffer.Write(new byte[4096], 0, 4096);
@@ -191,22 +191,22 @@
         [Repeat(200)]
         public void WaitForWriteDeviceDead(WriteOverload overload)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[4096], 0, 4096);
                 Assert.That(buffer.BytesFree, Is.EqualTo(0));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
 
                 Task driver = new TaskFactory().StartNew(() => {
                     // Try to randomize the order in which things run to look for race conditions.
-                    Random r1 = new Random();
+                    Random r1 = new();
                     if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                     buffer.DeviceDead();
                 });
 
                 // Try to randomize the order in which things run to look for race conditions.
-                Random r2 = new Random();
+                Random r2 = new();
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
 
                 Assert.That(buffer.WaitForWrite(overload, 1, Timeout.Infinite, cts), Is.False);
@@ -225,8 +225,8 @@
         [TestCase(true, WriteOverload.TokenNone, TestName = "WaitForWriteDeadTryWriteFullCancellationTokenNone")]
         public void WaitForWriteDeadTryWrite(bool full, WriteOverload overload)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 // When writing to a dead device, the write operation does nothing.
                 if (full) buffer.Write(new byte[4096], 0, 4096);
 
@@ -245,14 +245,14 @@
         public void WaitForWriteDispose(WriteOverload overload)
         {
             MemoryWriteBuffer buffer = null;
-            CancellationTokenSource cts = new CancellationTokenSource();
+            CancellationTokenSource cts = new();
             try {
                 buffer = new MemoryWriteBuffer(4096);
                 buffer.Write(new byte[4096], 0, 4096);
                 Task driver = new TaskFactory().StartNew(() => {
                     for (int i = 0; i < 2; i++) {
                         // Try to randomize the order in which things run to look for race conditions.
-                        Random r1 = new Random();
+                        Random r1 = new();
                         if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                         lock (buffer.Lock) {
@@ -263,7 +263,7 @@
                     buffer.Dispose();
                 });
 
-                Random r2 = new Random();
+                Random r2 = new();
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
 
                 bool wait = false;
@@ -280,7 +280,7 @@
                 driver.Wait();
             } finally {
                 // A double dispose shouldn't cause a problem.
-                if (buffer != null) buffer.Dispose();
+                if (buffer is not null) buffer.Dispose();
                 cts.Dispose();
             }
         }
@@ -289,7 +289,7 @@
         [Repeat(10)]
         public void WaitForWriteBufferDriver()
         {
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Task user = new TaskFactory().StartNew(() => {
                     Thread.Sleep(50);
                     buffer.Write(new byte[10], 0, 10);
@@ -305,7 +305,7 @@
         [Test]
         public void WaitForWriteToEmpty()
         {
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Assert.That(buffer.IsBufferNotEmpty, Is.False);
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(0));
                 Assert.That(buffer.WaitForWrite(1, 0), Is.True);
@@ -346,8 +346,8 @@
         [TestCase(WriteOverload.TokenNone, TestName = "WaitForWriteInvalidCountCancellationTokenNone")]
         public void WaitForWriteInvalidCount(WriteOverload overload)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Assert.That(() => {
                     buffer.WaitForWrite(overload, -1, Timeout.Infinite, cts);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
@@ -359,8 +359,8 @@
         [TestCase(WriteOverload.TokenNone, TestName = "WaitForWriteInvalidTimeoutCancellationTokenNone")]
         public void WaitForWriteInvalidTimeout(WriteOverload overload)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Assert.That(() => {
                     buffer.WaitForWrite(overload, 1, -2, cts);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
@@ -372,8 +372,8 @@
         [TestCase(WriteOverload.TokenNone, TestName = "WaitForWriteCapacityCancellationTokenNone")]
         public void WaitForWriteCapacity(WriteOverload overload)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Assert.That(buffer.WaitForWrite(overload, 4097, Timeout.Infinite, cts), Is.False);
             }
         }
@@ -386,8 +386,8 @@
         [TestCase(WriteOverload.TokenNone, true, TestName = "WaitForWriteZeroCountFullCancellationTokenNone")]
         public void WaitForWriteZeroCount(WriteOverload overload, bool full)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 if (full) buffer.Write(new byte[4096], 0, 4096);
                 Assert.That(buffer.WaitForWrite(overload, 0, Timeout.Infinite, cts), Is.True);
             }
@@ -399,8 +399,8 @@
         [Repeat(5)]
         public void WaitForEmptyFromFull(WriteOverload overload)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[4096], 0, 4096);
                 Assert.That(buffer.BytesFree, Is.EqualTo(0));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
@@ -409,7 +409,7 @@
                     Thread.Sleep(50);
                     for (int i = 0; i < 2; i++) {
                         // Try to randomize the order in which things run to look for race conditions.
-                        Random r1 = new Random();
+                        Random r1 = new();
                         if (r1.Next(2) == 0) Thread.Sleep(r1.Next(2));
 
                         lock (buffer.Lock) {
@@ -428,8 +428,8 @@
         [TestCase(WriteOverload.TokenNone, TestName = "WaitForEmptyCancellationTokenNone")]
         public void WaitForEmpty(WriteOverload overload)
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Assert.That(buffer.BytesFree, Is.EqualTo(4096));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(0));
                 Assert.That(buffer.WaitForEmpty(overload, Timeout.Infinite, cts), Is.True);
@@ -439,8 +439,8 @@
         [Test]
         public void WaitForEmptyCancelled()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[2048], 0, 2048);
                 Assert.That(buffer.BytesFree, Is.EqualTo(2048));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(2048));
@@ -458,8 +458,8 @@
         [Test]
         public void WaitForEmptyCancelledPrior()
         {
-            using (CancellationTokenSource cts = new CancellationTokenSource())
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (CancellationTokenSource cts = new())
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[2048], 0, 2048);
                 Assert.That(buffer.BytesFree, Is.EqualTo(2048));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(2048));
@@ -472,7 +472,7 @@
         [Test]
         public void Purge()
         {
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[2048], 0, 2048);
                 Assert.That(buffer.BytesFree, Is.EqualTo(2048));
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(2048));
@@ -489,11 +489,11 @@
         [Test]
         public void Write()
         {
-            Random r = new Random();
+            Random r = new();
             byte[] data = new byte[256];
             r.NextBytes(data);
 
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(data, 0, data.Length);
                 Assert.That(buffer.BytesFree, Is.EqualTo(3840));
 
@@ -507,11 +507,11 @@
         [Test]
         public void WriteWrap()
         {
-            Random r = new Random();
+            Random r = new();
             byte[] data = new byte[256];
             r.NextBytes(data);
 
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[3968], 0, 3968);            // Shift the offset to position 3968 of 4096
                 buffer.Consume(128);                              // Make 256 bytes free
                 buffer.Write(data, 0, data.Length);
@@ -537,11 +537,11 @@
         [Test]
         public void WriteSpan()
         {
-            Random r = new Random();
+            Random r = new();
             byte[] data = new byte[256];
             r.NextBytes(data);
 
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Span<byte> span = data;
                 buffer.Write(span);
                 Assert.That(buffer.BytesFree, Is.EqualTo(3840));
@@ -556,11 +556,11 @@
         [Test]
         public void WriteWrapSpan()
         {
-            Random r = new Random();
+            Random r = new();
             byte[] data = new byte[256];
             r.NextBytes(data);
 
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[3968], 0, 3968);            // Shift the offset to position 3968 of 4096
                 buffer.Consume(128);                              // Make 256 bytes free
                 Span<byte> span = data;
@@ -586,11 +586,11 @@
         [Test]
         public void WriteSpanRetrieveViaSpan()
         {
-            Random r = new Random();
+            Random r = new();
             byte[] data = new byte[256];
             r.NextBytes(data);
 
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 Span<byte> span = data;
                 buffer.Write(span);
                 Assert.That(buffer.BytesFree, Is.EqualTo(3840));
@@ -605,11 +605,11 @@
         [Test]
         public void WriteWrapSpanRetrieveViaSpan()
         {
-            Random r = new Random();
+            Random r = new();
             byte[] data = new byte[256];
             r.NextBytes(data);
 
-            using (MemoryWriteBuffer buffer = new MemoryWriteBuffer(4096)) {
+            using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[3968], 0, 3968);            // Shift the offset to position 3968 of 4096
                 buffer.Consume(128);                              // Make 256 bytes free
                 Span<byte> span = data;

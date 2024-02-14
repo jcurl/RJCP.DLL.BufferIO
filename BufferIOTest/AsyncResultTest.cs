@@ -9,7 +9,7 @@ namespace RJCP.IO
         [Test]
         public void SynchronousAsyncTest()
         {
-            SynchronousTestAsync test = new SynchronousTestAsync();
+            SynchronousTestAsync test = new();
             IAsyncResult ar = test.BeginTest(null, null);
             Assert.That(ar.IsCompleted, Is.True);
             Assert.That(ar.AsyncState, Is.Null);
@@ -21,8 +21,8 @@ namespace RJCP.IO
         [Test]
         public void SynchronousAsyncTestWithObject()
         {
-            object state = new object();
-            SynchronousTestAsync test = new SynchronousTestAsync();
+            object state = new();
+            SynchronousTestAsync test = new();
             IAsyncResult ar = test.BeginTest(null, state);
             Assert.That(ar.IsCompleted, Is.True);
             Assert.That(ar.AsyncState, Is.EqualTo(state));
@@ -34,9 +34,9 @@ namespace RJCP.IO
         [Test]
         public void SynchronousAsyncTestWithCallback()
         {
-            object state = new object();
+            object state = new();
             bool callbackComplete = false;
-            SynchronousTestAsync test = new SynchronousTestAsync();
+            SynchronousTestAsync test = new();
             IAsyncResult ar = test.BeginTest((iar) => {
                 callbackComplete = true;
             }, state);
@@ -52,9 +52,9 @@ namespace RJCP.IO
         [Test]
         public void SynchronousAsyncTestWait()
         {
-            object state = new object();
+            object state = new();
             bool callbackComplete = false;
-            SynchronousTestAsync test = new SynchronousTestAsync();
+            SynchronousTestAsync test = new();
             IAsyncResult ar = test.BeginTest((iar) => {
                 callbackComplete = true;
             }, state);
@@ -76,7 +76,7 @@ namespace RJCP.IO
             // It's allowed to start the BeginXXX operation twice, if the object itself doesn't prevent this. The
             // implementation, not AsyncResult, is responsible to ensure that two operations don't run in parallel if
             // this is not desired.
-            SynchronousTestAsync test = new SynchronousTestAsync();
+            SynchronousTestAsync test = new();
             IAsyncResult ar1 = test.BeginTest(null, null);
             IAsyncResult ar2 = test.BeginTest(null, null);
             test.EndTest(ar1);
@@ -86,7 +86,7 @@ namespace RJCP.IO
         [Test]
         public void SynchronousStartMismatchedEnd()
         {
-            SynchronousTestAsync test = new SynchronousTestAsync();
+            SynchronousTestAsync test = new();
             IAsyncResult ar1 = test.BeginTest(null, null);
             Assert.That(() => {
                 test.EndSecondTest(ar1);
@@ -97,8 +97,8 @@ namespace RJCP.IO
         [Test]
         public void SynchronousStartMismatchedObject()
         {
-            SynchronousTestAsync test1 = new SynchronousTestAsync();
-            SynchronousTestAsync test2 = new SynchronousTestAsync();
+            SynchronousTestAsync test1 = new();
+            SynchronousTestAsync test2 = new();
 
             IAsyncResult ar1 = test1.BeginTest(null, null);
             IAsyncResult ar2 = test2.BeginTest(null, null);
@@ -115,7 +115,7 @@ namespace RJCP.IO
         [Timeout(2000)]
         public void AsynchronousAsyncTest()
         {
-            AsynchronousTestAsync test = new AsynchronousTestAsync();
+            AsynchronousTestAsync test = new();
             IAsyncResult ar = test.BeginTest(null, null);
             Assert.That(ar.CompletedSynchronously, Is.False);
             Assert.That(ar.AsyncState, Is.Null);
@@ -129,8 +129,8 @@ namespace RJCP.IO
         [Timeout(2000)]
         public void AsynchronousAsyncTestWithObject()
         {
-            object state = new object();
-            AsynchronousTestAsync test = new AsynchronousTestAsync();
+            object state = new();
+            AsynchronousTestAsync test = new();
             IAsyncResult ar = test.BeginTest(null, state);
             Assert.That(ar.CompletedSynchronously, Is.False);
             Assert.That(ar.AsyncState, Is.EqualTo(state));
@@ -144,9 +144,9 @@ namespace RJCP.IO
         [Timeout(2000)]
         public void AsynchronousAsyncTestWithCallback()
         {
-            object state = new object();
+            object state = new();
             bool callbackComplete = false;
-            AsynchronousTestAsync test = new AsynchronousTestAsync();
+            AsynchronousTestAsync test = new();
             IAsyncResult ar = test.BeginTest((iar) => {
                 callbackComplete = true;
             }, state);
@@ -165,9 +165,9 @@ namespace RJCP.IO
         [Timeout(2000)]
         public void AsynchronousAsyncTestWait()
         {
-            object state = new object();
+            object state = new();
             bool callbackComplete = false;
-            AsynchronousTestAsync test = new AsynchronousTestAsync();
+            AsynchronousTestAsync test = new();
             IAsyncResult ar = test.BeginTest((iar) => {
                 callbackComplete = true;
             }, state);
@@ -190,7 +190,7 @@ namespace RJCP.IO
             // For the purpose of this test, see the code "ProcessDelAsync". This shows how you might want to use a
             // delegate or a lambda to combine the AsyncResult to the class instantiating it.
 
-            ProcessDelAsync op = new ProcessDelAsync();
+            ProcessDelAsync op = new();
             IAsyncResult ar = op.BeginOp(null, null);
             op.EndOp(ar);
         }

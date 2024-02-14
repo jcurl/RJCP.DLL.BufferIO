@@ -20,16 +20,16 @@
     public class MemoryReadBuffer : IReadBufferStream, IReadBuffer, IDisposable
     {
         private readonly bool m_IsPinned;
-        private readonly object m_Lock = new object();
+        private readonly object m_Lock = new();
         private readonly CircularBuffer<byte> m_ReadBuffer;
         private readonly GCHandle m_ReadHandle;
         private volatile bool m_DeviceDead;
-        private readonly ManualResetEventSlim m_BufferNotFull = new ManualResetEventSlim(true);
+        private readonly ManualResetEventSlim m_BufferNotFull = new(true);
 
         // The m_ReadEvent is used to signal a change that when waiting, conditions can be checked. Conditions are
         // related to the state of m_ReadBuffer and m_DeviceDead. The event must be wrapped around a lock with m_Lock
         // when changing the state, or when checking the state and setting or resetting this event.
-        private readonly ManualResetEventSlim m_ReadEvent = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim m_ReadEvent = new(false);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryReadBuffer"/> class for a particular size and no pinned buffers.
@@ -265,7 +265,7 @@
 
         private bool WaitForReadInternal(int count, int timeout, CancellationToken token)
         {
-            TimerExpiry timer = new TimerExpiry(timeout);
+            TimerExpiry timer = new(timeout);
             int realTimeout = timeout;
             do {
                 try {
