@@ -50,8 +50,7 @@
         /// </exception>
         public MemoryWriteBuffer(int length, bool pinned)
         {
-            if (length <= 0)
-                throw new ArgumentOutOfRangeException(nameof(length), "Length must be positive");
+            ThrowHelper.ThrowIfNegativeOrZero(length);
 
             if (pinned) {
                 byte[] read = new byte[length];
@@ -106,12 +105,9 @@
         /// <exception cref="ObjectDisposedException">This object is disposed of.</exception>
         public bool WaitForWrite(int count, int timeout, CancellationToken token)
         {
-            if (timeout < Timeout.Infinite)
-                throw new ArgumentOutOfRangeException(nameof(timeout));
-
+            ThrowHelper.ThrowIfLessThan(timeout, Timeout.Infinite);
+            ThrowHelper.ThrowIfNegative(count);
             if (token.IsCancellationRequested) return false;
-
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "Count may not be negative");
             if (count == 0) return true;
             if (count > m_WriteBuffer.Capacity) return false;
 
@@ -144,11 +140,8 @@
         /// </returns>
         public bool WaitForEmpty(int timeout, CancellationToken token)
         {
-            if (timeout < Timeout.Infinite)
-                throw new ArgumentOutOfRangeException(nameof(timeout));
-
+            ThrowHelper.ThrowIfLessThan(timeout, Timeout.Infinite);
             if (token.IsCancellationRequested) return false;
-
             return WaitForWriteEvent(-1, timeout, token);
         }
 
@@ -192,12 +185,9 @@
         /// </returns>
         public Task<bool> WaitForWriteAsync(int count, int timeout, CancellationToken token)
         {
-            if (timeout < Timeout.Infinite)
-                throw new ArgumentOutOfRangeException(nameof(timeout));
-
+            ThrowHelper.ThrowIfLessThan(timeout, Timeout.Infinite);
+            ThrowHelper.ThrowIfNegative(count);
             if (token.IsCancellationRequested) return Task.FromResult(false);
-
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "Count may not be negative");
             if (count == 0) return Task.FromResult(true);
             if (count > m_WriteBuffer.Capacity) return Task.FromResult(false);
 
@@ -230,9 +220,7 @@
         /// </returns>
         public Task<bool> WaitForEmptyAsync(int timeout, CancellationToken token)
         {
-            if (timeout < Timeout.Infinite)
-                throw new ArgumentOutOfRangeException(nameof(timeout));
-
+            ThrowHelper.ThrowIfLessThan(timeout, Timeout.Infinite);
             if (token.IsCancellationRequested) return Task.FromResult(false);
 
             return WaitForWriteEventAsync(-1, timeout, token);

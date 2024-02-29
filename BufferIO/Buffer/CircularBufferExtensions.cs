@@ -139,9 +139,7 @@
         {
             ThrowHelper.ThrowIfNull(bytes);
             ThrowHelper.ThrowIfNull(chars);
-            if (charIndex < 0) throw new ArgumentOutOfRangeException(nameof(charIndex), "may not be negative");
-            if (charCount < 0) throw new ArgumentOutOfRangeException(nameof(charCount), "may not be negative");
-            if (chars.Length - charIndex < charCount) throw new ArgumentException("charIndex and charCount exceed char buffer boundaries");
+            ThrowHelper.ThrowIfArrayOutOfBounds(chars, charIndex, charCount);
 
             bytesUsed = 0;
             charsUsed = 0;
@@ -339,9 +337,7 @@
         {
             ThrowHelper.ThrowIfNull(bytes);
             ThrowHelper.ThrowIfNull(chars);
-            if (byteIndex < 0) throw new ArgumentOutOfRangeException(nameof(byteIndex), "may not be negative");
-            if (byteCount < 0) throw new ArgumentOutOfRangeException(nameof(byteCount), "may not be negative");
-            if (bytes.Length - byteIndex < byteCount) throw new ArgumentException("byteIndex and byteCount exceed byte buffer boundaries");
+            ThrowHelper.ThrowIfArrayOutOfBounds(bytes, byteIndex, byteCount);
 
             bytesUsed = 0;
             charsUsed = 0;
@@ -438,9 +434,7 @@
 
             ThrowHelper.ThrowIfNull(chars);
             ThrowHelper.ThrowIfNull(bytes);
-            if (charIndex < 0) throw new ArgumentOutOfRangeException(nameof(charIndex), "may not be negative");
-            if (charCount < 0) throw new ArgumentOutOfRangeException(nameof(charCount), "may not be negative");
-            if (chars.Length - charIndex < charCount) throw new ArgumentException("charIndex and charCount exceed char buffer boundaries");
+            ThrowHelper.ThrowIfArrayOutOfBounds(chars, charIndex, charCount);
 
             bytesUsed = 0;
             charsUsed = 0;

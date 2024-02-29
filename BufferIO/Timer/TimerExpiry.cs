@@ -68,8 +68,7 @@
         /// </remarks>
         public TimerExpiry(int milliseconds)
         {
-            if (milliseconds < System.Threading.Timeout.Infinite)
-                throw new ArgumentOutOfRangeException(nameof(milliseconds));
+            ThrowHelper.ThrowIfLessThan(milliseconds, System.Threading.Timeout.Infinite);
             m_Duration = milliseconds;
             m_StartTime = Environment.TickCount;
         }
@@ -88,8 +87,7 @@
             get { return m_Duration; }
             set
             {
-                if (value < System.Threading.Timeout.Infinite)
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                ThrowHelper.ThrowIfLessThan(value, System.Threading.Timeout.Infinite);
                 m_Expired = false;
                 m_Duration = value;
                 m_StartTime = Environment.TickCount;

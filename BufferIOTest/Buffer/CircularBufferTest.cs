@@ -296,11 +296,17 @@
             Assert.That(cb2.Start, Is.EqualTo(0));
             Assert.That(cb2[0], Is.EqualTo(0x80));
 
-            CircularBuffer<byte> cb3 = new(m, 15, 10);
-            Assert.That(cb3.Length, Is.EqualTo(10));
-            Assert.That(cb3.Free, Is.EqualTo(m.Length - 10));
-            Assert.That(cb3.Start, Is.EqualTo(15));
-            Assert.That(cb3[0], Is.EqualTo(0x02));
+            CircularBuffer<byte> cb3 = new(m, m.Length);
+            Assert.That(cb3.Length, Is.EqualTo(m.Length));
+            Assert.That(cb3.Free, Is.EqualTo(0));
+            Assert.That(cb3.Start, Is.EqualTo(0));
+            Assert.That(cb3[0], Is.EqualTo(0x80));
+
+            CircularBuffer<byte> cb4 = new(m, 15, 10);
+            Assert.That(cb4.Length, Is.EqualTo(10));
+            Assert.That(cb4.Free, Is.EqualTo(m.Length - 10));
+            Assert.That(cb4.Start, Is.EqualTo(15));
+            Assert.That(cb4[0], Is.EqualTo(0x02));
         }
 
         [Test]

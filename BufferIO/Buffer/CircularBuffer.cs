@@ -36,7 +36,7 @@
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> must be positive.</exception>
         public CircularBuffer(int capacity)
         {
-            if (capacity <= 0) throw new ArgumentOutOfRangeException(nameof(capacity), "capacity must be positive");
+            ThrowHelper.ThrowIfNegativeOrZero(capacity);
             m_Array = new T[capacity];
             m_Start = 0;
             m_Count = 0;
@@ -57,8 +57,7 @@
         /// </remarks>
         public CircularBuffer(T[] array)
         {
-            ThrowHelper.ThrowIfNull(array);
-            if (array.Length == 0) throw new ArgumentException("Array must have at least one element", nameof(array));
+            ThrowHelper.ThrowIfArrayEmpty(array);
             m_Array = array;
             m_Start = 0;
             m_Count = array.Length;
@@ -83,11 +82,9 @@
         /// </remarks>
         public CircularBuffer(T[] array, int count)
         {
-            ThrowHelper.ThrowIfNull(array);
-            if (array.Length == 0) throw new ArgumentException("Array must have at least one element", nameof(array));
-            if (count < 0 || count > array.Length)
-                throw new ArgumentOutOfRangeException(nameof(count), "Count must be within range of the array");
-
+            ThrowHelper.ThrowIfArrayEmpty(array);
+            ThrowHelper.ThrowIfNegative(count);
+            ThrowHelper.ThrowIfGreaterThan(count, array.Length);
             m_Array = array;
             m_Start = 0;
             m_Count = count;
@@ -119,13 +116,10 @@
         /// </remarks>
         public CircularBuffer(T[] array, int offset, int count)
         {
-            ThrowHelper.ThrowIfNull(array);
-            if (array.Length == 0) throw new ArgumentException("Array must have at least one element", nameof(array));
-            if (count < 0 || count > array.Length)
-                throw new ArgumentOutOfRangeException(nameof(count), "must be within range of the array");
-            if (offset < 0 || offset >= array.Length)
-                throw new ArgumentOutOfRangeException(nameof(offset), "exceeds array boundaries");
-
+            ThrowHelper.ThrowIfArrayEmpty(array);
+            ThrowHelper.ThrowIfArrayOutOfBounds(array, offset);
+            ThrowHelper.ThrowIfNegative(count);
+            ThrowHelper.ThrowIfGreaterThan(count, array.Length);
             m_Array = array;
             m_Start = offset;
             m_Count = count;
@@ -265,7 +259,7 @@
         /// </example>
         public int GetReadBlock(int offset)
         {
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), "may not be negative");
+            ThrowHelper.ThrowIfNegative(offset);
             if (offset >= m_Count) return 0;
 
             int s = (m_Start + offset) % m_Array.Length;
@@ -294,8 +288,8 @@
         /// </remarks>
         public void Consume(int length)
         {
-            if (length < 0 || length > m_Count)
-                throw new ArgumentOutOfRangeException(nameof(length), "Cannot consume negative length, or more data than exists");
+            ThrowHelper.ThrowIfNegative(length);
+            ThrowHelper.ThrowIfGreaterThan(length, m_Count);
 
             // Note, some implementations may rely on the pointers being correctly advanced also in
             // the case that data is consumed.
@@ -316,8 +310,8 @@
         /// </exception>
         public void Produce(int length)
         {
-            if (length < 0 || length > m_Array.Length - m_Count)
-                throw new ArgumentOutOfRangeException(nameof(length), "Cannot produce negative length, or exceed buffer free");
+            ThrowHelper.ThrowIfNegative(length);
+            ThrowHelper.ThrowIfGreaterThan(length, m_Array.Length - m_Count);
 
             m_Count += length;
         }
@@ -340,9 +334,8 @@
         /// </remarks>
         public void Revert(int length)
         {
-            if (length < 0 || length >= m_Count)
-                throw new ArgumentOutOfRangeException(nameof(length),
-                    "must be positive and not exceed the number of elements in the circular buffer");
+            ThrowHelper.ThrowIfNegative(length);
+            ThrowHelper.ThrowIfGreaterThanOrEqual(length, m_Count);
 
             m_Count -= length;
         }
@@ -376,14 +369,14 @@
             get
             {
 #if DEBUG
-                if (index >= Length) throw new ArgumentOutOfRangeException(nameof(index), "Index exceeded Buffer Length");
+                ThrowHelper.ThrowIfGreaterThanOrEqual(index, Length);
 #endif
                 return m_Array[(m_Start + index) % m_Array.Length];
             }
             set
             {
 #if DEBUG
-                if (index >= Length) throw new ArgumentOutOfRangeException(nameof(index), "Index exceeded Buffer Length");
+                ThrowHelper.ThrowIfGreaterThanOrEqual(index, Length);
 #endif
                 m_Array[(m_Start + index) % m_Array.Length] = value;
             }
@@ -432,9 +425,7 @@
         public int Append(T[] array, int offset, int count)
         {
             ThrowHelper.ThrowIfNull(array);
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), "may not be negative");
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "may not be negative");
-            if (offset > array.Length - count) throw new ArgumentException("Parameters exceed array boundary");
+            ThrowHelper.ThrowIfArrayOutOfBounds(array, offset, count);
             if (m_Count == Capacity) return 0;
             if (count == 0) return 0;
 
@@ -543,9 +534,10 @@
         public int Append(CircularBuffer<T> buffer, int offset, int count)
         {
             ThrowHelper.ThrowIfNull(buffer);
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), "may not be negative");
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "may not be negative");
-            if (offset > buffer.Length - count) throw new ArgumentException("Parameters exceed buffer boundary");
+            ThrowHelper.ThrowIfNegative(offset);
+            ThrowHelper.ThrowIfNegative(count);
+            if (offset > buffer.Length - count)
+                throw new ArgumentException($"The offset {offset} and length {count} exceed the bounds of buffer having {buffer.Length}");
             if (m_Count == Capacity) return 0;
             if (count == 0) return 0;
 
@@ -698,9 +690,7 @@
         {
             ThrowHelper.ThrowIfNull(array);
             if (count == 0) return 0;
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), "may not be negative");
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "may not be negative");
-            if (offset > array.Length - count) throw new ArgumentException("Offset and count exceed boundary length");
+            ThrowHelper.ThrowIfArrayOutOfBounds(array, offset, count);
 
             if (count <= ReadLength) {
                 // The block of data is one continuous block to copy
@@ -761,7 +751,8 @@
         /// </exception>
         public int Substring(T element, int offset)
         {
-            if (offset < 0 || offset > m_Count) throw new ArgumentOutOfRangeException(nameof(offset), "out of range [0..Length-1]");
+            ThrowHelper.ThrowIfNegative(offset);
+            ThrowHelper.ThrowIfGreaterThan(offset, m_Count);
 
             int count = m_Count - offset;
             int start = (m_Start + offset) % m_Array.Length;
@@ -809,7 +800,8 @@
         public int Substring(T[] elements, int offset)
         {
             ThrowHelper.ThrowIfNull(elements);
-            if (offset < 0 || offset > m_Count) throw new ArgumentOutOfRangeException(nameof(offset), "out of range [0..Length-1]");
+            ThrowHelper.ThrowIfNegative(offset);
+            ThrowHelper.ThrowIfGreaterThan(offset, m_Count);
 
             int count = m_Count - offset;
             int start = (m_Start + offset) % m_Array.Length;

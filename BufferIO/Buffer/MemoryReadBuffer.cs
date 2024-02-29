@@ -51,8 +51,7 @@
         /// </exception>
         public MemoryReadBuffer(int length, bool pinned)
         {
-            if (length <= 0)
-                throw new ArgumentOutOfRangeException(nameof(length), "Length must be positive");
+            ThrowHelper.ThrowIfNegativeOrZero(length);
 
             if (pinned) {
                 byte[] read = new byte[length];
@@ -157,12 +156,9 @@
         /// </remarks>
         public bool WaitForRead(int count, int timeout, CancellationToken token)
         {
-            if (timeout < Timeout.Infinite)
-                throw new ArgumentOutOfRangeException(nameof(timeout));
-
+            ThrowHelper.ThrowIfLessThan(timeout, Timeout.Infinite);
+            ThrowHelper.ThrowIfNegative(count);
             if (token.IsCancellationRequested) return false;
-
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "Count may not be negative");
             if (count == 0) return true;
             if (count > m_ReadBuffer.Capacity) return false;
 
@@ -234,12 +230,9 @@
         /// </returns>
         public Task<bool> WaitForReadAsync(int count, int timeout, CancellationToken token)
         {
-            if (timeout < Timeout.Infinite)
-                throw new ArgumentOutOfRangeException(nameof(timeout));
-
+            ThrowHelper.ThrowIfLessThan(timeout, Timeout.Infinite);
+            ThrowHelper.ThrowIfNegative(count);
             if (token.IsCancellationRequested) return Task.FromResult(false);
-
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "Count may not be negative");
             if (count == 0) return Task.FromResult(true);
             if (count > m_ReadBuffer.Capacity) return Task.FromResult(false);
 
@@ -497,7 +490,7 @@
         /// </exception>
         public void Produce(int length)
         {
-            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length), "length must be positive");
+            ThrowHelper.ThrowIfNegative(length);
             if (length == 0) return;
 
             m_ReadBuffer.Produce(length);
