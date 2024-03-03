@@ -156,6 +156,7 @@
         /// </remarks>
         public bool WaitForRead(int count, int timeout, CancellationToken token)
         {
+            ThrowHelper.ThrowIfDisposed(m_IsDisposed, this);
             ThrowHelper.ThrowIfLessThan(timeout, Timeout.Infinite);
             ThrowHelper.ThrowIfNegative(count);
             if (token.IsCancellationRequested) return false;

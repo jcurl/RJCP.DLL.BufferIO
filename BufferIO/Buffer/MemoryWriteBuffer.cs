@@ -105,6 +105,7 @@
         /// <exception cref="ObjectDisposedException">This object is disposed of.</exception>
         public bool WaitForWrite(int count, int timeout, CancellationToken token)
         {
+            ThrowHelper.ThrowIfDisposed(m_IsDisposed, this);
             ThrowHelper.ThrowIfLessThan(timeout, Timeout.Infinite);
             ThrowHelper.ThrowIfNegative(count);
             if (token.IsCancellationRequested) return false;
