@@ -8,7 +8,7 @@
     // These test cases are a copy of MemoryReadBufferTest, WaitForRead.
 
     [TestFixture]
-    [Timeout(2000)]
+    [CancelAfter(2000)]
     public class MemoryReadBufferAsyncTest
     {
         [Test]
@@ -515,84 +515,92 @@
         }
 
         [Test]
-        public void WaitForReadAsyncNegativeTimeout()
+        public async Task WaitForReadAsyncNegativeTimeout()
         {
             using (MemoryReadBuffer buffer = new(4096)) {
-                Assert.That(async () => { await buffer.WaitForReadAsync(-2); },
-                    Throws.TypeOf<ArgumentOutOfRangeException>());
+                await Assert.ThatAsync(async () => {
+                    await buffer.WaitForReadAsync(-2);
+                }, Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
             }
         }
 
         [Test]
-        public void WaitForReadAsyncNegativeTimeoutCancellationToken()
+        public async Task WaitForReadAsyncNegativeTimeoutCancellationToken()
         {
             using (CancellationTokenSource cts = new())
             using (MemoryReadBuffer buffer = new(4096)) {
-                Assert.That(async () => { await buffer.WaitForReadAsync(-2, cts.Token); },
-                    Throws.TypeOf<ArgumentOutOfRangeException>());
+                await Assert.ThatAsync(async () => {
+                    await buffer.WaitForReadAsync(-2, cts.Token);
+                }, Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
             }
         }
 
         [Test]
-        public void WaitForReadAsyncCountNegativeTimeout()
+        public async Task WaitForReadAsyncCountNegativeTimeout()
         {
             using (MemoryReadBuffer buffer = new(4096)) {
-                Assert.That(async () => { await buffer.WaitForReadAsync(500, -2); },
-                    Throws.TypeOf<ArgumentOutOfRangeException>());
+                await Assert.ThatAsync(async () => {
+                    await buffer.WaitForReadAsync(500, -2);
+                }, Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
             }
         }
 
         [Test]
-        public void WaitForReadAsyncCountNegativeTimeoutCancellationToken()
-        {
-            using (CancellationTokenSource cts = new())
-            using (MemoryReadBuffer buffer = new(4096)) {
-                Assert.That(async () => { await buffer.WaitForReadAsync(500, -2, cts.Token); },
-                    Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
-            }
-        }
-
-        [Test]
-        public void WaitForReadAsyncCountNegativeTimeoutCancellationTokenNone()
-        {
-            using (MemoryReadBuffer buffer = new(4096)) {
-                Assert.That(async () => { await buffer.WaitForReadAsync(500, -2, CancellationToken.None); },
-                    Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
-            }
-        }
-
-        [Test]
-        public void WaitForReadAsyncNegativeCount()
-        {
-            using (MemoryReadBuffer buffer = new(4096)) {
-                Assert.That(async () => { await buffer.WaitForReadAsync(-100, Timeout.Infinite); },
-                    Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
-            }
-        }
-
-        [Test]
-        public void WaitForReadAsyncNegativeCountCancellationToken()
+        public async Task WaitForReadAsyncCountNegativeTimeoutCancellationToken()
         {
             using (CancellationTokenSource cts = new())
             using (MemoryReadBuffer buffer = new(4096)) {
-                Assert.That(async () => { await buffer.WaitForReadAsync(-100, Timeout.Infinite, cts.Token); },
-                    Throws.TypeOf<ArgumentOutOfRangeException>());
+                await Assert.ThatAsync(async () => {
+                    await buffer.WaitForReadAsync(500, -2, cts.Token);
+                }, Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
             }
         }
 
         [Test]
-        public void WaitForReadAsyncNegativeCountCancellationTokenNone()
+        public async Task WaitForReadAsyncCountNegativeTimeoutCancellationTokenNone()
         {
             using (MemoryReadBuffer buffer = new(4096)) {
-                Assert.That(async () => { await buffer.WaitForReadAsync(-100, Timeout.Infinite, CancellationToken.None); },
-                    Throws.TypeOf<ArgumentOutOfRangeException>());
+                await Assert.ThatAsync(async () => {
+                    await buffer.WaitForReadAsync(500, -2, CancellationToken.None);
+                }, Throws.TypeOf<ArgumentOutOfRangeException>());
+                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public async Task WaitForReadAsyncNegativeCount()
+        {
+            using (MemoryReadBuffer buffer = new(4096)) {
+                await Assert.ThatAsync(async () => {
+                    await buffer.WaitForReadAsync(-100, Timeout.Infinite);
+                }, Throws.TypeOf<ArgumentOutOfRangeException>());
+                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public async Task WaitForReadAsyncNegativeCountCancellationToken()
+        {
+            using (CancellationTokenSource cts = new())
+            using (MemoryReadBuffer buffer = new(4096)) {
+                await Assert.ThatAsync(async () => {
+                    await buffer.WaitForReadAsync(-100, Timeout.Infinite, cts.Token);
+                }, Throws.TypeOf<ArgumentOutOfRangeException>());
+                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+            }
+        }
+
+        [Test]
+        public async Task WaitForReadAsyncNegativeCountCancellationTokenNone()
+        {
+            using (MemoryReadBuffer buffer = new(4096)) {
+                await Assert.ThatAsync(async () => {
+                    await buffer.WaitForReadAsync(-100, Timeout.Infinite, CancellationToken.None);
+                }, Throws.TypeOf<ArgumentOutOfRangeException>());
                 Assert.That(buffer.BytesToRead, Is.EqualTo(0));
             }
         }

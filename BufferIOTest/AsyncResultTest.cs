@@ -112,7 +112,7 @@ namespace RJCP.IO
         }
 
         [Test]
-        [Timeout(2000)]
+        [CancelAfter(2000)]
         public void AsynchronousAsyncTest()
         {
             AsynchronousTestAsync test = new();
@@ -126,7 +126,7 @@ namespace RJCP.IO
         }
 
         [Test]
-        [Timeout(2000)]
+        [CancelAfter(2000)]
         public void AsynchronousAsyncTestWithObject()
         {
             object state = new();
@@ -141,7 +141,7 @@ namespace RJCP.IO
         }
 
         [Test]
-        [Timeout(2000)]
+        [CancelAfter(2000)]
         public void AsynchronousAsyncTestWithCallback()
         {
             object state = new();
@@ -162,7 +162,7 @@ namespace RJCP.IO
         }
 
         [Test]
-        [Timeout(2000)]
+        [CancelAfter(2000)]
         public void AsynchronousAsyncTestWait()
         {
             object state = new();

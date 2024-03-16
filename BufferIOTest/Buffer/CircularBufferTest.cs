@@ -182,11 +182,11 @@
             Assert.That(cb.Start, Is.EqualTo(25));
             Assert.That(cb.Length, Is.EqualTo(50));
             for (int i = 0; i < cb.Length; i++) {
-                Assert.That(cb[i], Is.EqualTo((i + 25) % 50), "Index {0}", i);
+                Assert.That(cb[i], Is.EqualTo((i + 25) % 50), $"Index {i}");
             }
 
             for (int i = 0; i < cb.Length; i++) {
-                Assert.That(cb.Array[cb.ToArrayIndex(i)], Is.EqualTo((i + 25) % 50), "Index {0}", i);
+                Assert.That(cb.Array[cb.ToArrayIndex(i)], Is.EqualTo((i + 25) % 50), $"Index {i}");
             }
         }
 
@@ -267,7 +267,7 @@
             }
 
             for (int i = 0; i < rd.Length; i++) {
-                Assert.That(cb[i], Is.EqualTo(rd[i]), "Index {0} doesn't match", i);
+                Assert.That(cb[i], Is.EqualTo(rd[i]), $"Index {i} doesn't match");
             }
         }
 

@@ -8,12 +8,12 @@
     public class TimerExpiryTest
     {
         [Test]
-        [Timeout(1000)]
+        [CancelAfter(1000)]
         public void TimerExpiry_Basic()
         {
             TimerExpiry te = new(200);
             int t = te.RemainingTime();
-            Assert.That(t, Is.GreaterThan(140), "Timer is less than 140ms (should be close to 200ms), remaining={0}", t);
+            Assert.That(t, Is.GreaterThan(140), $"Timer is less than 140ms (should be close to 200ms), remaining={t}");
 
             int[] rea = new int[1000];
             int c = 0;
@@ -43,7 +43,7 @@
         }
 
         [Test]
-        [Timeout(5000)]
+        [CancelAfter(5000)]
         public void TimerExpiry_Reset()
         {
             TimerExpiry te = new(1000);
@@ -72,7 +72,7 @@
         }
 
         [Test]
-        [Timeout(5000)]
+        [CancelAfter(5000)]
         public void TimerExpiry_Reset2()
         {
             TimerExpiry te = new(1000);
@@ -89,7 +89,7 @@
         }
 
         [Test]
-        [Timeout(2000)]
+        [CancelAfter(2000)]
         public void TimerExpiry_Negative()
         {
             TimerExpiry te = new(-1);

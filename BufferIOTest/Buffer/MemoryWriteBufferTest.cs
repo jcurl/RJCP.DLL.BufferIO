@@ -37,7 +37,7 @@
     }
 
     [TestFixture]
-    [Timeout(2000)]
+    [CancelAfter(2000)]
     public class MemoryWriteBufferTest
     {
         [Test]

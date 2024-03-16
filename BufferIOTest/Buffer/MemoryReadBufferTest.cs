@@ -6,7 +6,7 @@
     using NUnit.Framework;
 
     [TestFixture]
-    [Timeout(2000)]
+    [CancelAfter(2000)]
     public class MemoryReadBufferTest
     {
         [Test]

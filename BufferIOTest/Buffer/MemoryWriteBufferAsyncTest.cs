@@ -39,7 +39,7 @@
     }
 
     [TestFixture]
-    [Timeout(2000)]
+    [CancelAfter(2000)]
     public class MemoryWriteBufferAsyncTest
     {
         [TestCase(WriteOverload.Normal, TestName = "WaitForWriteAsync")]
@@ -299,11 +299,11 @@
         [TestCase(WriteOverload.Normal, TestName = "WaitForWriteAsyncInvalidCount")]
         [TestCase(WriteOverload.Token, TestName = "WaitForWriteAsyncInvalidCountCancellationToken")]
         [TestCase(WriteOverload.TokenNone, TestName = "WaitForWriteAsyncInvalidCountCancellationTokenNone")]
-        public void WaitForWriteInvalidCount(WriteOverload overload)
+        public async Task WaitForWriteInvalidCount(WriteOverload overload)
         {
             using (CancellationTokenSource cts = new())
             using (MemoryWriteBuffer buffer = new(4096)) {
-                Assert.That(async () => {
+                await Assert.ThatAsync(async () => {
                     await buffer.WaitForWriteAsync(overload, -1, Timeout.Infinite, cts);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
             }
@@ -312,11 +312,11 @@
         [TestCase(WriteOverload.Normal, TestName = "WaitForWriteAsyncInvalidTimeout")]
         [TestCase(WriteOverload.Token, TestName = "WaitForWriteAsyncInvalidTimeoutCancellationToken")]
         [TestCase(WriteOverload.TokenNone, TestName = "WaitForWriteAsyncInvalidTimeoutCancellationTokenNone")]
-        public void WaitForWriteInvalidTimeout(WriteOverload overload)
+        public async Task WaitForWriteInvalidTimeout(WriteOverload overload)
         {
             using (CancellationTokenSource cts = new())
             using (MemoryWriteBuffer buffer = new(4096)) {
-                Assert.That(async () => {
+                await Assert.ThatAsync(async () => {
                     await buffer.WaitForWriteAsync(overload, 1, -2, cts);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
             }
