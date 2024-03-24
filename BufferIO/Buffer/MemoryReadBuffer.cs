@@ -250,7 +250,7 @@
         private async Task<bool> WaitForReadInternalAsync(int count, int timeout, CancellationToken token)
         {
             try {
-                return await Task.Run(() => WaitForReadInternal(count, timeout, token), token);
+                return await Task.Run(() => WaitForReadInternal(count, timeout, token), token).ConfigureAwait(false);
             } catch (TaskCanceledException) {
                 return false;
             }

@@ -241,7 +241,7 @@
         private async Task<bool> WaitForWriteEventInternalAsync(int count, int timeout, CancellationToken token)
         {
             try {
-                return await Task.Run(() => WaitForWriteEventInternal(count, timeout, token), token);
+                return await Task.Run(() => WaitForWriteEventInternal(count, timeout, token), token).ConfigureAwait(false);
             } catch (TaskCanceledException) {
                 return false;
             }

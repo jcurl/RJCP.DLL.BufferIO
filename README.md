@@ -9,8 +9,9 @@ multiple different projects.
   - [1.3. Circular Buffer](#13-circular-buffer)
   - [1.4. Memory Read Buffer, Memory Write Buffer](#14-memory-read-buffer-memory-write-buffer)
 - [2. Release History](#2-release-history)
-  - [2.1. Version 0.2.1](#21-version-021)
-  - [2.2. Version 0.2.0](#22-version-020)
+  - [2.1. Version 0.2.2](#21-version-022)
+  - [2.2. Version 0.2.1](#22-version-021)
+  - [2.3. Version 0.2.0](#23-version-020)
 
 ## 1. Features
 
@@ -122,11 +123,15 @@ used by the SerialPortStream.
 
 ## 2. Release History
 
-### 2.1. Version 0.2.1
+### 2.1. Version 0.2.2
+
+- Use `ConfigureAwait(false)` where appropriate (DOTNET-1012).
+
+### 2.2. Version 0.2.1
 
 - Updated from .NET 4.5 to 4.6.2 (DOTNET-827) and .NET Standard 2.1 to .NET 6.0
   (DOTNET-936, DOTNET-942, DOTNET-945).
 
-### 2.2. Version 0.2.0
+### 2.3. Version 0.2.0
 
 - First version, refactored from SerialPortStream

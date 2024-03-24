@@ -20,7 +20,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/jcurl/RJCP.DLL.BufferIO</PackageProjectUrl>
     <Description>Provides functionality for buffered I/O.</Description>
-    <Version>0.2.1</Version>
+    <Version>0.2.2</Version>
 
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
