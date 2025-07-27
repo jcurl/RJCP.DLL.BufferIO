@@ -131,6 +131,7 @@ used by the SerialPortStream.
 
 - Updated from .NET 4.5 to 4.6.2 (DOTNET-827) and .NET Standard 2.1 to .NET 6.0
   (DOTNET-936, DOTNET-942, DOTNET-945).
+- Include .NET 8.0 (DOTNET-982)
 
 ### 2.3. Version 0.2.0
 
