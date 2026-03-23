@@ -132,11 +132,11 @@
 
             Assert.That(cb.GetString(1, 14), Is.EqualTo("ABCDEFGHIJKLMN"));
             cb.Consume(15);
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cb.Free, Is.EqualTo(20));
 
             cb.Append("12345678901234567890".ToCharArray());
-            Assert.That(cb.Free, Is.EqualTo(0));
+            Assert.That(cb.Free, Is.Zero);
             Assert.That(cb.Length, Is.EqualTo(20));
             Assert.That(cb.GetString(), Is.EqualTo("12345678901234567890"));
         }
@@ -240,8 +240,8 @@
             char[] outc = new char[100];
 
             d.Convert(cb, outc, 0, outc.Length, true, out int bu, out int cu, out bool completed);
-            Assert.That(bu, Is.EqualTo(0));
-            Assert.That(cu, Is.EqualTo(0));
+            Assert.That(bu, Is.Zero);
+            Assert.That(cu, Is.Zero);
             Assert.That(completed, Is.True);
         }
 
@@ -254,8 +254,8 @@
             CircularBuffer<char> cc = new(100);
 
             d.Convert(cb, cc, cc.Length, true, out int bu, out int cu, out bool completed);
-            Assert.That(bu, Is.EqualTo(0));
-            Assert.That(cu, Is.EqualTo(0));
+            Assert.That(bu, Is.Zero);
+            Assert.That(cu, Is.Zero);
             Assert.That(completed, Is.True);
         }
 
@@ -268,8 +268,8 @@
             CircularBuffer<char> cc = new(100);
 
             d.Convert(cb, cc, true, out int bu, out int cu, out bool completed);
-            Assert.That(bu, Is.EqualTo(0));
-            Assert.That(cu, Is.EqualTo(0));
+            Assert.That(bu, Is.Zero);
+            Assert.That(cu, Is.Zero);
             Assert.That(completed, Is.True);
         }
 
@@ -282,8 +282,8 @@
             CircularBuffer<char> cc = new(100);
 
             d.Convert(sb, 0, 0, cc, true, out int bu, out int cu, out bool completed);
-            Assert.That(bu, Is.EqualTo(0));
-            Assert.That(cu, Is.EqualTo(0));
+            Assert.That(bu, Is.Zero);
+            Assert.That(cu, Is.Zero);
             Assert.That(completed, Is.True);
         }
 
@@ -296,8 +296,8 @@
             CircularBuffer<byte> cb = new(100);
 
             e.Convert(sc, 0, 0, cb, true, out int cu, out int bu, out bool completed);
-            Assert.That(cu, Is.EqualTo(0));
-            Assert.That(bu, Is.EqualTo(0));
+            Assert.That(cu, Is.Zero);
+            Assert.That(bu, Is.Zero);
             Assert.That(completed, Is.True);
         }
 
@@ -325,7 +325,7 @@
             d.Convert(cb, c, 0, c.Length, false, out int bu, out int cu, out bool complete);
             Assert.That(complete, Is.True);
             Assert.That(bu, Is.EqualTo(m.Length));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cu, Is.EqualTo(c.Length));
             Assert.That(new string(c), Is.EqualTo("OPQRSTUVWXYZ€@ABCDEFGHIJKLMN"));
         }
@@ -354,7 +354,7 @@
             d.Convert(cb, c, 0, c.Length, true, out int bu, out int cu, out bool complete);
             Assert.That(complete, Is.True);
             Assert.That(bu, Is.EqualTo(m.Length));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cu, Is.EqualTo(c.Length));
             Assert.That(new string(c), Is.EqualTo("OPQRSTUVWXYZ€@ABCDEFGHIJKLMN"));
         }
@@ -449,7 +449,7 @@
             d.Convert(cb, c, 0, c.Length, false, out int bu, out int cu, out bool complete);
             Assert.That(complete, Is.True);
             Assert.That(bu, Is.EqualTo(13));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cu, Is.EqualTo(12));
             Assert.That(new string(c, 0, cu), Is.EqualTo("OPQRSTUVWXYZ"));
 
@@ -457,7 +457,7 @@
             d.Convert(cb, c, 0, c.Length, false, out bu, out cu, out complete);
             Assert.That(complete, Is.True);
             Assert.That(bu, Is.EqualTo(17));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cu, Is.EqualTo(16));
             Assert.That(new string(c, 0, 16), Is.EqualTo("€@ABCDEFGHIJKLMN"));
         }
@@ -480,7 +480,7 @@
             d.Convert(cb, c, 0, c.Length, true, out int bu, out int cu, out bool complete);
             Assert.That(complete, Is.True);
             Assert.That(bu, Is.EqualTo(14));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cu, Is.EqualTo(13));
             Assert.That(new string(c, 0, 13), Is.EqualTo("OPQRSTUVWXYZ."));
         }
@@ -527,7 +527,7 @@
             Assert.That(bu, Is.EqualTo(16));
             Assert.That(cu, Is.EqualTo(14));
             Assert.That(new string(c, 0, 14), Is.EqualTo("OPQRSTUVWXYZ\uDB40\uDC84"));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
         }
 
         [Test]
@@ -583,7 +583,7 @@
                 // buffer. But then nothing should be consumed. Instead, it may be bytes are consumed and no exception,
                 // or no bytes are consumed and an exception.
                 d.Convert(cb, c, 0, 1, false, out bu, out cu, out complete);
-                Assert.That(bu, Is.Not.EqualTo(0));          // If no exception, then bytes must be consumed.
+                Assert.That(bu, Is.Not.Zero);          // If no exception, then bytes must be consumed.
                 Assert.That(cb.Length, Is.EqualTo(4 - bu));  // And that the buffer is reduced by the correct amount.
                 Assert.That(complete, Is.False);
             } catch (ArgumentException e) {
@@ -595,7 +595,7 @@
             if (!exception) {
                 // The conversion must be a single Unicode character, which is two UTF-16. As the previous test allowed
                 // only 1 UTF16 char, it must be zero if no exception was raised.
-                Assert.That(cu, Is.EqualTo(0));
+                Assert.That(cu, Is.Zero);
                 Assert.That(() => {
                     d.Convert(cb, c, 0, 1, false, out _, out _, out _);
                 }, Throws.TypeOf<ArgumentException>().With.Property("ParamName").EqualTo("chars"));
@@ -608,7 +608,7 @@
             d.Reset();
             try {
                 d.Convert(cb, c, 0, 1, true, out bu, out cu, out complete);
-                Assert.That(bu, Is.Not.EqualTo(0));          // If no exception, then bytes must be consumed.
+                Assert.That(bu, Is.Not.Zero);          // If no exception, then bytes must be consumed.
                 Assert.That(cb.Length, Is.EqualTo(4 - bu));  // And that the buffer is reduced by the correct amount.
                 Assert.That(complete, Is.False);
             } catch (ArgumentException e) {
@@ -618,7 +618,7 @@
             }
 
             if (!exception) {
-                Assert.That(cu, Is.EqualTo(0));
+                Assert.That(cu, Is.Zero);
                 Assert.That(() => {
                     d.Convert(cb, c, 0, 1, false, out _, out _, out _);
                 }, Throws.TypeOf<ArgumentException>().With.Property("ParamName").EqualTo("chars"));
@@ -627,7 +627,7 @@
             d.Convert(cb, c, 0, 2, true, out _, out cu, out complete);
             Assert.That(complete, Is.True);
             Assert.That(cu, Is.EqualTo(2));
-            Assert.That(cb.Length, Is.EqualTo(0));  // Show that all data was now consumed
+            Assert.That(cb.Length, Is.Zero);  // Show that all data was now consumed
         }
 
         [Test]
@@ -760,7 +760,7 @@
             d.Convert(cb, cc, cc.Free, false, out int bu, out int cu, out bool complete);
             Assert.That(complete, Is.True);
             Assert.That(bu, Is.EqualTo(13));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cu, Is.EqualTo(12));
             Assert.That(cc.GetString(), Is.EqualTo("OPQRSTUVWXYZ"));
             cc.Consume(cu);
@@ -769,7 +769,7 @@
             d.Convert(cb, cc, cc.Free, false, out bu, out cu, out complete);
             Assert.That(complete, Is.True);
             Assert.That(bu, Is.EqualTo(17));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cu, Is.EqualTo(16));
             Assert.That(cc.GetString(), Is.EqualTo("€@ABCDEFGHIJKLMN"));
         }
@@ -793,7 +793,7 @@
             d.Convert(cb, cc, cc.Free, true, out int bu, out int cu, out bool complete);
             Assert.That(complete, Is.True);
             Assert.That(bu, Is.EqualTo(14));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cu, Is.EqualTo(13));
             Assert.That(cc.GetString(), Is.EqualTo("OPQRSTUVWXYZ."));
         }
@@ -842,7 +842,7 @@
             Assert.That(bu, Is.EqualTo(16));
             Assert.That(cu, Is.EqualTo(14));
             Assert.That(cc.GetString(), Is.EqualTo("OPQRSTUVWXYZ\uDB40\uDC84"));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
         }
 
         [Test]
@@ -866,7 +866,7 @@
             Assert.That(bu, Is.EqualTo(16));
             Assert.That(cu, Is.EqualTo(14));
             Assert.That(cc.GetString(), Is.EqualTo("OPQRSTUVWXYZ\uDB40\uDC84"));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
         }
 
         [Test]
@@ -925,7 +925,7 @@
                 // buffer. But then nothing should be consumed. Instead, it may be bytes are consumed and no exception,
                 // or no bytes are consumed and an exception.
                 d.Convert(cb, cc, 1, false, out bu, out cu, out complete);
-                Assert.That(bu, Is.Not.EqualTo(0));          // If no exception, then bytes must be consumed.
+                Assert.That(bu, Is.Not.Zero);          // If no exception, then bytes must be consumed.
                 Assert.That(cb.Length, Is.EqualTo(4 - bu));  // And that the buffer is reduced by the correct amount.
                 Assert.That(complete, Is.False);
             } catch (ArgumentException e) {
@@ -936,7 +936,7 @@
             if (!exception) {
                 // The conversion must be a single Unicode character, which is two UTF-16. As the previous test allowed
                 // only 1 UTF16 char, it must be zero if no exception was raised.
-                Assert.That(cu, Is.EqualTo(0));
+                Assert.That(cu, Is.Zero);
                 Assert.That(() => {
                     d.Convert(cb, cc, 1, false, out _, out _, out _);
                 }, Throws.TypeOf<ArgumentException>().With.Property("ParamName").EqualTo("chars"));
@@ -949,7 +949,7 @@
             d.Reset();
             try {
                 d.Convert(cb, cc, 1, true, out bu, out cu, out complete);
-                Assert.That(bu, Is.Not.EqualTo(0));          // If no exception, then bytes must be consumed.
+                Assert.That(bu, Is.Not.Zero);          // If no exception, then bytes must be consumed.
                 Assert.That(cb.Length, Is.EqualTo(4 - bu));  // And that the buffer is reduced by the correct amount.
                 Assert.That(complete, Is.False);
             } catch (ArgumentException e) {
@@ -958,7 +958,7 @@
                 cu = -1;
             }
             if (!exception) {
-                Assert.That(cu, Is.EqualTo(0));
+                Assert.That(cu, Is.Zero);
                 Assert.That(() => {
                     d.Convert(cb, cc, 1, false, out _, out _, out _);
                 }, Throws.TypeOf<ArgumentException>().With.Property("ParamName").EqualTo("chars"));
@@ -967,7 +967,7 @@
             d.Convert(cb, cc, 2, true, out _, out cu, out complete);
             Assert.That(complete, Is.True);
             Assert.That(cu, Is.EqualTo(2));
-            Assert.That(cb.Length, Is.EqualTo(0));  // Show that all data was now consumed
+            Assert.That(cb.Length, Is.Zero);  // Show that all data was now consumed
         }
 
         [Test]
@@ -987,7 +987,7 @@
             d.Convert(cb, cc, cc.Capacity, false, out int bu, out int cu, out bool complete);
             Assert.That(complete, Is.True);
             Assert.That(bu, Is.EqualTo(b.Length));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cu, Is.EqualTo(28));
             Assert.That(cc.GetString(), Is.EqualTo("OPQRSTUVWXYZ€@ABCDEFGHIJKLMN"));
         }
@@ -1007,7 +1007,7 @@
             d.Convert(cb, cc, cc.Capacity, false, out int bu, out int cu, out _);
             Assert.That(cu, Is.EqualTo(30));
             Assert.That(bu, Is.EqualTo(32));
-            Assert.That(cc.Free, Is.EqualTo(0));
+            Assert.That(cc.Free, Is.Zero);
             Assert.That(cc.GetString(), Is.EqualTo("\uDB40\uDC840123456789@ABCDIJKLMNOPQRSTU"));
         }
 
@@ -1052,7 +1052,7 @@
             d.Convert(cb, cc, true, out int bu, out int cu, out bool complete);
             Assert.That(bu, Is.EqualTo(3));
             Assert.That(cu, Is.EqualTo(2));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cc.Length, Is.EqualTo(2));
             Assert.That(cc[0], Is.EqualTo('A'));
             Assert.That(cc[1], Is.EqualTo((char)0xFFFD));
@@ -1066,7 +1066,7 @@
             cc.Consume(1);
             Assert.That(bu, Is.EqualTo(3));
             Assert.That(cu, Is.EqualTo(2));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cc.Length, Is.EqualTo(2));
             Assert.That(cc[0], Is.EqualTo('A'));
             Assert.That(cc[1], Is.EqualTo((char)0xFFFD));
@@ -1090,7 +1090,7 @@
             d.Convert(cb, cc, false, out int bu, out int cu, out bool complete);
             Assert.That(complete, Is.True);
             Assert.That(bu, Is.EqualTo(b.Length));
-            Assert.That(cb.Length, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
             Assert.That(cu, Is.EqualTo(28));
             Assert.That(cc.GetString(), Is.EqualTo("OPQRSTUVWXYZ€@ABCDEFGHIJKLMN"));
         }

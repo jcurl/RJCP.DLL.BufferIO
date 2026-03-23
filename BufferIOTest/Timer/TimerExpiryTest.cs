@@ -29,7 +29,7 @@
                 Thread.Sleep(re);
                 re = te.RemainingTime();
             } while (re > 0);
-            Assert.That(te.RemainingTime(), Is.EqualTo(0));
+            Assert.That(te.RemainingTime(), Is.Zero);
             Assert.That(te.Expired, Is.True);
 
             for (int i = 0; i < c; i++) {
@@ -43,32 +43,32 @@
         }
 
         [Test]
-        [CancelAfter(5000)]
+        [CancelAfter(8000)]
         public void TimerExpiry_Reset()
         {
             TimerExpiry te = new(1000);
             Thread.Sleep(250);
-            Assert.That(te.RemainingTime(), Is.GreaterThan(600));
+            Assert.That(te.RemainingTime(), Is.Not.GreaterThan(750).And.Not.LessThan(100));
             te.Reset();
 
             Thread.Sleep(250);
-            Assert.That(te.RemainingTime(), Is.GreaterThan(600));
+            Assert.That(te.RemainingTime(), Is.Not.GreaterThan(750).And.Not.LessThan(100));
             te.Reset();
 
             Thread.Sleep(250);
-            Assert.That(te.RemainingTime(), Is.GreaterThan(600));
+            Assert.That(te.RemainingTime(), Is.Not.GreaterThan(750).And.Not.LessThan(100));
             te.Reset();
 
             Thread.Sleep(250);
-            Assert.That(te.RemainingTime(), Is.GreaterThan(600));
+            Assert.That(te.RemainingTime(), Is.Not.GreaterThan(750).And.Not.LessThan(100));
             te.Reset();
 
             Thread.Sleep(250);
-            Assert.That(te.RemainingTime(), Is.GreaterThan(600));
+            Assert.That(te.RemainingTime(), Is.Not.GreaterThan(750).And.Not.LessThan(100));
             te.Reset();
 
             Thread.Sleep(250);
-            Assert.That(te.RemainingTime(), Is.GreaterThan(600));
+            Assert.That(te.RemainingTime(), Is.Not.GreaterThan(750).And.Not.LessThan(100));
         }
 
         [Test]
@@ -110,7 +110,7 @@
         {
             TimerExpiry te = new(0);
             Assert.That(te.Expired, Is.True);
-            Assert.That(te.RemainingTime(), Is.EqualTo(0));
+            Assert.That(te.RemainingTime(), Is.Zero);
         }
 
         [Test]

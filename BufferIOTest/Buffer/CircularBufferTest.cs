@@ -75,34 +75,34 @@
             Assert.That(cb.Capacity, Is.EqualTo(50));
 
             // Initial state
-            Assert.That(cb.Start, Is.EqualTo(0));
-            Assert.That(cb.Length, Is.EqualTo(0));
-            Assert.That(cb.ReadLength, Is.EqualTo(0));
-            Assert.That(cb.End, Is.EqualTo(0));
+            Assert.That(cb.Start, Is.Zero);
+            Assert.That(cb.Length, Is.Zero);
+            Assert.That(cb.ReadLength, Is.Zero);
+            Assert.That(cb.End, Is.Zero);
             Assert.That(cb.Free, Is.EqualTo(50));
             Assert.That(cb.WriteLength, Is.EqualTo(50));
 
             // Test 1: Allocate 50 bytes
             cb.Produce(50);
-            Assert.That(cb.Start, Is.EqualTo(0));
+            Assert.That(cb.Start, Is.Zero);
             Assert.That(cb.Length, Is.EqualTo(50));
             Assert.That(cb.ReadLength, Is.EqualTo(50));
-            Assert.That(cb.End, Is.EqualTo(0));
-            Assert.That(cb.Free, Is.EqualTo(0));
-            Assert.That(cb.WriteLength, Is.EqualTo(0));
+            Assert.That(cb.End, Is.Zero);
+            Assert.That(cb.Free, Is.Zero);
+            Assert.That(cb.WriteLength, Is.Zero);
 
             // Test 2: Free 50 bytes
             cb.Consume(50);
-            Assert.That(cb.Start, Is.EqualTo(0));
-            Assert.That(cb.Length, Is.EqualTo(0));
-            Assert.That(cb.ReadLength, Is.EqualTo(0));
-            Assert.That(cb.End, Is.EqualTo(0));
+            Assert.That(cb.Start, Is.Zero);
+            Assert.That(cb.Length, Is.Zero);
+            Assert.That(cb.ReadLength, Is.Zero);
+            Assert.That(cb.End, Is.Zero);
             Assert.That(cb.Free, Is.EqualTo(50));
             Assert.That(cb.WriteLength, Is.EqualTo(50));
 
             // Test 3: Allocate 25 bytes
             cb.Produce(25);
-            Assert.That(cb.Start, Is.EqualTo(0));
+            Assert.That(cb.Start, Is.Zero);
             Assert.That(cb.Length, Is.EqualTo(25));
             Assert.That(cb.ReadLength, Is.EqualTo(25));
             Assert.That(cb.End, Is.EqualTo(25));
@@ -124,15 +124,15 @@
             Assert.That(cb.Length, Is.EqualTo(50));
             Assert.That(cb.ReadLength, Is.EqualTo(26));
             Assert.That(cb.End, Is.EqualTo(24));
-            Assert.That(cb.Free, Is.EqualTo(0));
-            Assert.That(cb.WriteLength, Is.EqualTo(0));
+            Assert.That(cb.Free, Is.Zero);
+            Assert.That(cb.WriteLength, Is.Zero);
 
             // Test 6: Reset
             cb.Reset();
-            Assert.That(cb.Start, Is.EqualTo(0));
-            Assert.That(cb.Length, Is.EqualTo(0));
-            Assert.That(cb.ReadLength, Is.EqualTo(0));
-            Assert.That(cb.End, Is.EqualTo(0));
+            Assert.That(cb.Start, Is.Zero);
+            Assert.That(cb.Length, Is.Zero);
+            Assert.That(cb.ReadLength, Is.Zero);
+            Assert.That(cb.End, Is.Zero);
             Assert.That(cb.Free, Is.EqualTo(50));
             Assert.That(cb.WriteLength, Is.EqualTo(50));
 
@@ -144,14 +144,14 @@
             Assert.That(cb.Length, Is.EqualTo(50));
             Assert.That(cb.ReadLength, Is.EqualTo(25));
             Assert.That(cb.End, Is.EqualTo(25));
-            Assert.That(cb.Free, Is.EqualTo(0));
-            Assert.That(cb.WriteLength, Is.EqualTo(0));
+            Assert.That(cb.Free, Is.Zero);
+            Assert.That(cb.WriteLength, Is.Zero);
 
             // Test 8: Free all data
             cb.Consume(50);
             Assert.That(cb.Start, Is.EqualTo(25));
-            Assert.That(cb.Length, Is.EqualTo(0));
-            Assert.That(cb.ReadLength, Is.EqualTo(0));
+            Assert.That(cb.Length, Is.Zero);
+            Assert.That(cb.ReadLength, Is.Zero);
             Assert.That(cb.End, Is.EqualTo(25));
             Assert.That(cb.Free, Is.EqualTo(50));
             Assert.That(cb.WriteLength, Is.EqualTo(25));
@@ -168,7 +168,7 @@
             }
             cb.Produce(50);
             Assert.That(cb.Length, Is.EqualTo(50));
-            Assert.That(cb.Start, Is.EqualTo(0));
+            Assert.That(cb.Start, Is.Zero);
 
             // Access the array using the indexer
             for (int i = 0; i < cb.Length; i++) {
@@ -210,7 +210,7 @@
             Assert.That(cb.GetReadBlock(25), Is.EqualTo(25));
             Assert.That(cb.GetReadBlock(30), Is.EqualTo(20));
             Assert.That(cb.GetReadBlock(49), Is.EqualTo(1));
-            Assert.That(cb.GetReadBlock(50), Is.EqualTo(0));
+            Assert.That(cb.GetReadBlock(50), Is.Zero);
         }
 
         [Test]
@@ -229,7 +229,7 @@
             Assert.That(cb.Start, Is.EqualTo(25));
             Assert.That(cb.ReadLength, Is.EqualTo(25));
             Assert.That(cb.End, Is.EqualTo(25));
-            Assert.That(cb.WriteLength, Is.EqualTo(0));
+            Assert.That(cb.WriteLength, Is.Zero);
 
             cb.Revert(5);
             Assert.That(cb.Start, Is.EqualTo(25));
@@ -240,7 +240,7 @@
             cb.Revert(20);
             Assert.That(cb.Start, Is.EqualTo(25));
             Assert.That(cb.ReadLength, Is.EqualTo(25));
-            Assert.That(cb.End, Is.EqualTo(0));
+            Assert.That(cb.End, Is.Zero);
             Assert.That(cb.WriteLength, Is.EqualTo(25));
 
             cb.Revert(20);
@@ -286,20 +286,20 @@
 
             CircularBuffer<byte> cb1 = new(m);
             Assert.That(cb1.Length, Is.EqualTo(m.Length));
-            Assert.That(cb1.Free, Is.EqualTo(0));
-            Assert.That(cb1.Start, Is.EqualTo(0));
+            Assert.That(cb1.Free, Is.Zero);
+            Assert.That(cb1.Start, Is.Zero);
             Assert.That(cb1[0], Is.EqualTo(0x80));
 
             CircularBuffer<byte> cb2 = new(m, 10);
             Assert.That(cb2.Length, Is.EqualTo(10));
             Assert.That(cb2.Free, Is.EqualTo(m.Length - 10));
-            Assert.That(cb2.Start, Is.EqualTo(0));
+            Assert.That(cb2.Start, Is.Zero);
             Assert.That(cb2[0], Is.EqualTo(0x80));
 
             CircularBuffer<byte> cb3 = new(m, m.Length);
             Assert.That(cb3.Length, Is.EqualTo(m.Length));
-            Assert.That(cb3.Free, Is.EqualTo(0));
-            Assert.That(cb3.Start, Is.EqualTo(0));
+            Assert.That(cb3.Free, Is.Zero);
+            Assert.That(cb3.Start, Is.Zero);
             Assert.That(cb3[0], Is.EqualTo(0x80));
 
             CircularBuffer<byte> cb4 = new(m, 15, 10);
@@ -325,7 +325,7 @@
             CircularBuffer<byte> cb1 = new(m);
             Assert.That(cb1.Substring(0x00), Is.EqualTo(1));
             Assert.That(cb1.Substring(0x2F), Is.EqualTo(2));
-            Assert.That(cb1.Substring(0x80), Is.EqualTo(0));
+            Assert.That(cb1.Substring(0x80), Is.Zero);
             Assert.That(cb1.Substring(0xFF), Is.EqualTo(-1));
             Assert.That(cb1.Substring(0x76), Is.EqualTo(51));
 
@@ -357,7 +357,7 @@
             CircularBuffer<byte> cb1 = new(m);
             cb1.Consume(0x20);
             cb1.Append(new byte[] { 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47 });
-            Assert.That(cb1.Substring(0x20), Is.EqualTo(0));
+            Assert.That(cb1.Substring(0x20), Is.Zero);
             Assert.That(cb1.Substring(0x30), Is.EqualTo(16));
             Assert.That(cb1.Substring(0x30, 0x10), Is.EqualTo(16));
             Assert.That(cb1.Substring(0x40, 0x10), Is.EqualTo(32));
@@ -456,9 +456,9 @@
             cb.Consume(1);
             Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }), Is.EqualTo(1));
             cb.Consume(1);
-            Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }), Is.EqualTo(0));
+            Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }), Is.Zero);
             cb.Consume(1);
-            Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }), Is.EqualTo(0));
+            Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }), Is.Zero);
             cb.Consume(1);
             Assert.That(cb.Substring(new byte[] { 0x0A, 0x0D }), Is.EqualTo(3));
         }

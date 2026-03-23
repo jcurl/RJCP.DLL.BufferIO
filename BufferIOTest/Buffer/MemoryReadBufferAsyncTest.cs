@@ -100,7 +100,7 @@
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
 
                 Assert.That(await buffer.WaitForReadAsync(Timeout.Infinite), Is.False);
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
                 Assert.That(buffer.IsDeviceDead, Is.True);
                 await driver;
             }
@@ -197,7 +197,7 @@
                 bool wait;
                 try {
                     wait = await buffer.WaitForReadAsync(Timeout.Infinite);
-                    Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                    Assert.That(buffer.BytesToRead, Is.Zero);
                 } catch (ObjectDisposedException) {
                     // The exception is expected when the buffer is disposed before WaitForRead is called.
                     wait = false;
@@ -220,7 +220,7 @@
                     cts.Cancel();
                 });
                 Assert.That(await buffer.WaitForReadAsync(Timeout.Infinite, cts.Token), Is.False);
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
                 await user;
             }
         }
@@ -230,7 +230,7 @@
         {
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(await buffer.WaitForReadAsync(100, CancellationToken.None), Is.False);
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -391,7 +391,7 @@
                     cts.Cancel();
                 });
                 Assert.That(await buffer.WaitForReadAsync(1000, Timeout.Infinite, cts.Token), Is.False);
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
                 await user;
             }
         }
@@ -425,7 +425,7 @@
         {
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(await buffer.WaitForReadAsync(1000, 100, CancellationToken.None), Is.False);
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -521,7 +521,7 @@
                 await Assert.ThatAsync(async () => {
                     await buffer.WaitForReadAsync(-2);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -533,7 +533,7 @@
                 await Assert.ThatAsync(async () => {
                     await buffer.WaitForReadAsync(-2, cts.Token);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -544,7 +544,7 @@
                 await Assert.ThatAsync(async () => {
                     await buffer.WaitForReadAsync(500, -2);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -556,7 +556,7 @@
                 await Assert.ThatAsync(async () => {
                     await buffer.WaitForReadAsync(500, -2, cts.Token);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -567,7 +567,7 @@
                 await Assert.ThatAsync(async () => {
                     await buffer.WaitForReadAsync(500, -2, CancellationToken.None);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -578,7 +578,7 @@
                 await Assert.ThatAsync(async () => {
                     await buffer.WaitForReadAsync(-100, Timeout.Infinite);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -590,7 +590,7 @@
                 await Assert.ThatAsync(async () => {
                     await buffer.WaitForReadAsync(-100, Timeout.Infinite, cts.Token);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -601,7 +601,7 @@
                 await Assert.ThatAsync(async () => {
                     await buffer.WaitForReadAsync(-100, Timeout.Infinite, CancellationToken.None);
                 }, Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
     }

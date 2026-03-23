@@ -15,7 +15,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(buffer.Lock, Is.Not.Null);
                 Assert.That(buffer.BufferPtr, Is.EqualTo(IntPtr.Zero));      // Not pinned, so is zero
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
                 Assert.That(buffer.IsBufferNotFull, Is.True);
                 Assert.That(buffer.Buffer, Has.Length.EqualTo(4096));
                 Assert.That(buffer.BufferWriteLength, Is.EqualTo(4096));
@@ -29,7 +29,7 @@
             using (MemoryReadBuffer buffer = new(4096, true)) {
                 Assert.That(buffer.Lock, Is.Not.Null);
                 Assert.That(buffer.BufferPtr, Is.Not.EqualTo(IntPtr.Zero));  // Pinned, so is real
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
                 Assert.That(buffer.IsBufferNotFull, Is.True);
                 Assert.That(buffer.Buffer, Has.Length.EqualTo(4096));
                 Assert.That(buffer.BufferWriteLength, Is.EqualTo(4096));
@@ -126,7 +126,7 @@
                 if (r2.Next(2) == 0) Thread.Sleep(r2.Next(2));
 
                 Assert.That(buffer.WaitForRead(Timeout.Infinite), Is.False);
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
                 Assert.That(buffer.IsDeviceDead, Is.True);
                 driver.Wait();
             }
@@ -223,7 +223,7 @@
                 bool wait;
                 try {
                     wait = buffer.WaitForRead(Timeout.Infinite);
-                    Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                    Assert.That(buffer.BytesToRead, Is.Zero);
                 } catch (ObjectDisposedException) {
                     // The exception is expected when the buffer is disposed before WaitForRead is called.
                     wait = false;
@@ -242,7 +242,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 buffer.Produce(4096);
                 Assert.That(buffer.IsBufferNotFull, Is.False);
-                Assert.That(buffer.BufferWriteLength, Is.EqualTo(0));
+                Assert.That(buffer.BufferWriteLength, Is.Zero);
 
                 Task user = new TaskFactory().StartNew(() => {
                     Thread.Sleep(100);
@@ -263,7 +263,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 buffer.Produce(4096);
                 Assert.That(buffer.IsBufferNotFull, Is.False);
-                Assert.That(buffer.BufferWriteLength, Is.EqualTo(0));
+                Assert.That(buffer.BufferWriteLength, Is.Zero);
 
                 Task user = new TaskFactory().StartNew(() => {
                     Thread.Sleep(100);
@@ -289,7 +289,7 @@
                     cts.Cancel();
                 });
                 Assert.That(buffer.WaitForRead(Timeout.Infinite, cts.Token), Is.False);
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
                 user.Wait();
             }
         }
@@ -299,7 +299,7 @@
         {
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(buffer.WaitForRead(100, CancellationToken.None), Is.False);
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -460,7 +460,7 @@
                     cts.Cancel();
                 });
                 Assert.That(buffer.WaitForRead(1000, Timeout.Infinite, cts.Token), Is.False);
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
                 user.Wait();
             }
         }
@@ -494,7 +494,7 @@
         {
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(buffer.WaitForRead(1000, 100, CancellationToken.None), Is.False);
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -589,7 +589,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(() => { buffer.WaitForRead(-2); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -600,7 +600,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(() => { buffer.WaitForRead(-2, cts.Token); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -610,7 +610,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(() => { buffer.WaitForRead(500, -2); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -621,7 +621,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(() => { buffer.WaitForRead(500, -2, cts.Token); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -631,7 +631,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(() => { buffer.WaitForRead(500, -2, CancellationToken.None); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -641,7 +641,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(() => { buffer.WaitForRead(-100, Timeout.Infinite); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -652,7 +652,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(() => { buffer.WaitForRead(-100, Timeout.Infinite, cts.Token); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -662,7 +662,7 @@
             using (MemoryReadBuffer buffer = new(4096)) {
                 Assert.That(() => { buffer.WaitForRead(-100, Timeout.Infinite, CancellationToken.None); },
                     Throws.TypeOf<ArgumentOutOfRangeException>());
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
             }
         }
 
@@ -674,7 +674,7 @@
                 Assert.That(buffer.BytesToRead, Is.EqualTo(3072));
 
                 buffer.Clear();
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
                 Assert.That(buffer.IsBufferNotFull, Is.True);
 
                 buffer.Produce(4096);
@@ -682,7 +682,7 @@
                 Assert.That(buffer.IsBufferNotFull, Is.False);
 
                 buffer.Clear();
-                Assert.That(buffer.BytesToRead, Is.EqualTo(0));
+                Assert.That(buffer.BytesToRead, Is.Zero);
                 Assert.That(buffer.IsBufferNotFull, Is.True);
             }
         }

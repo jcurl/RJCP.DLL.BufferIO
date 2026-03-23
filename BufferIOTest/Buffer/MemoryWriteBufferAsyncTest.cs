@@ -62,7 +62,7 @@
             using (CancellationTokenSource cts = new())
             using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[4096], 0, 4096);
-                Assert.That(buffer.BytesFree, Is.EqualTo(0));
+                Assert.That(buffer.BytesFree, Is.Zero);
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
 
                 Task producer = new TaskFactory().StartNew(() => {
@@ -91,7 +91,7 @@
             using (CancellationTokenSource cts = new())
             using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[4096], 0, 4096);
-                Assert.That(buffer.BytesFree, Is.EqualTo(0));
+                Assert.That(buffer.BytesFree, Is.Zero);
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
 
                 Task user = new TaskFactory().StartNew(() => {
@@ -101,7 +101,7 @@
                 });
 
                 Assert.That(await buffer.WaitForWriteAsync(1, Timeout.Infinite, cts.Token), Is.False);
-                Assert.That(buffer.BytesFree, Is.EqualTo(0));
+                Assert.That(buffer.BytesFree, Is.Zero);
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
                 await user;
             }
@@ -113,12 +113,12 @@
             using (CancellationTokenSource cts = new())
             using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[4096], 0, 4096);
-                Assert.That(buffer.BytesFree, Is.EqualTo(0));
+                Assert.That(buffer.BytesFree, Is.Zero);
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
                 cts.Cancel();
 
                 Assert.That(await buffer.WaitForWriteAsync(1, Timeout.Infinite, cts.Token), Is.False);
-                Assert.That(buffer.BytesFree, Is.EqualTo(0));
+                Assert.That(buffer.BytesFree, Is.Zero);
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
             }
         }
@@ -166,7 +166,7 @@
             using (CancellationTokenSource cts = new())
             using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[4096], 0, 4096);
-                Assert.That(buffer.BytesFree, Is.EqualTo(0));
+                Assert.That(buffer.BytesFree, Is.Zero);
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
 
                 Task driver = new TaskFactory().StartNew(() => {
@@ -183,7 +183,7 @@
 
                 Assert.That(await buffer.WaitForWriteAsync(overload, 1, Timeout.Infinite, cts), Is.False);
                 Assert.That(buffer.BytesFree, Is.EqualTo(4096));
-                Assert.That(buffer.BytesToWrite, Is.EqualTo(0));
+                Assert.That(buffer.BytesToWrite, Is.Zero);
                 Assert.That(buffer.IsDeviceDead, Is.True);
                 await driver;
             }
@@ -205,7 +205,7 @@
                 buffer.DeviceDead();
                 Assert.That(await buffer.WaitForWriteAsync(overload, 1, Timeout.Infinite, cts), Is.False);
                 Assert.That(buffer.BytesFree, Is.EqualTo(4096));
-                Assert.That(buffer.BytesToWrite, Is.EqualTo(0));
+                Assert.That(buffer.BytesToWrite, Is.Zero);
                 Assert.That(buffer.IsDeviceDead, Is.True);
             }
         }
@@ -248,7 +248,7 @@
                 Assert.That(wait, Is.False);
                 Assert.That(buffer.IsDeviceDead, Is.True);
                 Assert.That(buffer.BytesFree, Is.EqualTo(4096));
-                Assert.That(buffer.BytesToWrite, Is.EqualTo(0));
+                Assert.That(buffer.BytesToWrite, Is.Zero);
                 await driver;
             } finally {
                 // A double dispose shouldn't cause a problem.
@@ -262,7 +262,7 @@
         {
             using (MemoryWriteBuffer buffer = new(4096)) {
                 Assert.That(buffer.IsBufferNotEmpty, Is.False);
-                Assert.That(buffer.BytesToWrite, Is.EqualTo(0));
+                Assert.That(buffer.BytesToWrite, Is.Zero);
                 Assert.That(await buffer.WaitForWriteAsync(1, 0), Is.True);
                 Assert.That(await buffer.WaitForWriteAsync(1, 1), Is.True);
 
@@ -275,7 +275,7 @@
 
                 buffer.Write(new byte[3996], 0, 3996);
                 Assert.That(buffer.IsBufferNotEmpty, Is.True);
-                Assert.That(buffer.BytesFree, Is.EqualTo(0));
+                Assert.That(buffer.BytesFree, Is.Zero);
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
                 Assert.That(await buffer.WaitForWriteAsync(1, 0), Is.False);
                 Assert.That(await buffer.WaitForWriteAsync(1, 1), Is.False);
@@ -290,7 +290,7 @@
                 buffer.Consume(3996);
                 Assert.That(buffer.IsBufferNotEmpty, Is.False);
                 Assert.That(buffer.BytesFree, Is.EqualTo(4096));
-                Assert.That(buffer.BytesToWrite, Is.EqualTo(0));
+                Assert.That(buffer.BytesToWrite, Is.Zero);
                 Assert.That(await buffer.WaitForWriteAsync(1, 0), Is.True);
                 Assert.That(await buffer.WaitForWriteAsync(1, 1), Is.True);
             }
@@ -357,7 +357,7 @@
             using (CancellationTokenSource cts = new())
             using (MemoryWriteBuffer buffer = new(4096)) {
                 buffer.Write(new byte[4096], 0, 4096);
-                Assert.That(buffer.BytesFree, Is.EqualTo(0));
+                Assert.That(buffer.BytesFree, Is.Zero);
                 Assert.That(buffer.BytesToWrite, Is.EqualTo(4096));
 
                 Task driver = new TaskFactory().StartNew(() => {
@@ -386,7 +386,7 @@
             using (CancellationTokenSource cts = new())
             using (MemoryWriteBuffer buffer = new(4096)) {
                 Assert.That(buffer.BytesFree, Is.EqualTo(4096));
-                Assert.That(buffer.BytesToWrite, Is.EqualTo(0));
+                Assert.That(buffer.BytesToWrite, Is.Zero);
                 Assert.That(await buffer.WaitForEmptyAsync(overload, Timeout.Infinite, cts), Is.True);
             }
         }

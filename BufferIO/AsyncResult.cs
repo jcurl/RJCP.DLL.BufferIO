@@ -351,7 +351,11 @@ namespace RJCP.IO
         {
             get
             {
+#if NET45_OR_GREATER || NETCOREAPP
+                return Volatile.Read(ref m_CompletedState) == StateCompletedSynchronously;
+#else
                 return Thread.VolatileRead(ref m_CompletedState) == StateCompletedSynchronously;
+#endif
             }
         }
 
@@ -406,7 +410,11 @@ namespace RJCP.IO
         {
             get
             {
+#if NET45_OR_GREATER || NETCOREAPP
+                return Volatile.Read(ref m_CompletedState) != StatePending;
+#else
                 return Thread.VolatileRead(ref m_CompletedState) != StatePending;
+#endif
             }
         }
         #endregion
